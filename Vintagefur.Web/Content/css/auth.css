@@ -1,0 +1,223 @@
+/* Auth Pages Styles */
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900');
+
+/* Auth Theme */
+.auth-theme {
+    background-color: #1f2029;
+    color: #c4c3ca;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.dark-header {
+    background-color: #171820 !important;
+    box-shadow: 0 4px 20px 0 rgba(0,0,0,.3);
+    border-bottom: 1px solid #2a2b38;
+}
+
+.dark-header .navbar {
+    background-color: #171820 !important;
+}
+
+.dark-header .navbar-dark .navbar-nav .nav-link {
+    color: #c4c3ca;
+    transition: all 0.3s ease;
+}
+
+.dark-header .navbar-dark .navbar-nav .nav-link:hover {
+    color: #ffeba7;
+}
+
+.dark-header .navbar-dark .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-header .search_icon ul li a {
+    color: #c4c3ca;
+}
+
+.dark-header .dropdown-menu {
+    background-color: #171820;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 8px 24px 0 rgba(0,0,0,.2);
+}
+
+.dark-header .dropdown-menu a {
+    color: #c4c3ca;
+    transition: all 0.3s ease;
+}
+
+.dark-header .dropdown-menu a:hover {
+    background-color: #1f2029;
+    color: #ffeba7;
+}
+
+.dark-header .dropdown-menu .divider {
+    background-color: #444;
+}
+
+/* Auth Main Content */
+.auth-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+}
+
+/* Auth Footer */
+.auth-footer-section {
+    background-color: #171820;
+    color: #c4c3ca;
+    padding: 20px 0;
+    border-top: 1px solid #2a2b38;
+}
+
+.auth-container {
+    font-family: 'Poppins', sans-serif;
+    color: #c4c3ca;
+    width: 100%;
+}
+
+.auth-card {
+    background-color: #2a2b38;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: 300%;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px 0 rgba(0,0,0,.3);
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.auth-card h4 {
+    font-weight: 600;
+    color: #ffeba7;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.auth-form .form-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.auth-form .form-control {
+    padding: 13px 20px;
+    padding-left: 55px;
+    height: 48px;
+    width: 100%;
+    font-weight: 500;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: 0.5px;
+    outline: none;
+    color: #c4c3ca;
+    background-color: #1f2029;
+    border: none;
+    box-shadow: 0 4px 8px 0 rgba(21,21,21,.2);
+    transition: all 200ms linear;
+}
+
+.auth-form .form-control:focus {
+    border: none;
+    outline: none;
+    box-shadow: 0 4px 8px 0 rgba(21,21,21,.2);
+}
+
+.auth-form .input-icon {
+    position: absolute;
+    top: 0;
+    left: 18px;
+    height: 48px;
+    font-size: 24px;
+    line-height: 48px;
+    text-align: left;
+    color: #ffeba7;
+    transition: all 200ms linear;
+}
+
+.auth-btn {
+    border-radius: 4px;
+    height: 44px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 200ms linear;
+    padding: 0 30px;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: none;
+    background-color: #ffeba7;
+    color: #102770;
+    box-shadow: 0 8px 24px 0 rgba(255,235,167,.2);
+    width: 100%;
+    margin-top: 15px;
+}
+
+.auth-btn:hover,
+.auth-btn:active,
+.auth-btn:focus {
+    background-color: #102770;
+    color: #ffeba7;
+    box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
+}
+
+.auth-link {
+    color: #c4c3ca;
+    text-decoration: none;
+    transition: all 200ms linear;
+}
+
+.auth-link:hover {
+    color: #ffeba7;
+    text-decoration: none;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 25px;
+}
+
+/* Темная тема для выпадающего меню */
+.auth-theme .dropdown-menu {
+    background-color: #1f2029;
+    border: 1px solid #2a2b38;
+}
+
+.auth-theme .dropdown-item {
+    color: #c4c3ca;
+}
+
+.auth-theme .dropdown-item:hover,
+.auth-theme .dropdown-item:focus {
+    color: #ffeba7;
+    background-color: #2a2b38;
+}
+
+.auth-theme .dropdown-divider {
+    border-top: 1px solid #2a2b38;
+}
+
+.auth-theme .dropdown-toggle::after {
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+    color: #ffeba7;
+} 
