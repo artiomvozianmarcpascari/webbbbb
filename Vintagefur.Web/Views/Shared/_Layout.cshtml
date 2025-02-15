@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>@ViewBag.Title - Vintage Fur</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap.min.css">
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/css/style.css">
+    <!-- Responsive-->
+    <link rel="stylesheet" href="~/Content/css/responsive.css">
+    <!-- fevicon -->
+    <link rel="icon" href="~/Content/images/fevicon.png" type="image/gif" />
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="~/Content/css/jquery.mCustomScrollbar.min.css">
+    <!-- Tweaks for older IEs-->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- owl stylesheets -->
+    <link rel="stylesheet" href="~/Content/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/Content/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+</head>
+<body>
+<!-- header section start -->
+<div class="header_section">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="logo"><a href="@Url.Action("Index", "Home")"><img src="~/Content/images/logo.png"></a></div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Services", "Home")">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("About", "Home")">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Shop")">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Contact", "Home")">Contact</a>
+                    </li>
+                </ul>
+                <div class="search_icon">
+                    <ul>
+                        <li><a href="#"><img src="~/Content/images/search-icon.png"></a></li>
+                        @Html.Action("CartSummary", "Cart")
+                        @if (Request.IsAuthenticated)
+                        {
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    @(Session["UserName"] ?? User.Identity.Name) <b class="caret"></b>
+                                </a>
+                                <div class="dropdown-menu">
+                                    @if (Session["UserRole"]?.ToString() == "Admin")
+                                    {
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Admin")">Admin Panel</a>
+                                        
+                                        <!-- Отладочная информация -->
+                                        <div class="dropdown-item small text-muted">
+                                            Session["UserRole"]: @(Session["UserRole"] ?? "null")<br/>
+                                            User.IsInRole("Admin"): @User.IsInRole("Admin")<br/>
+                                            User.Identity.Name: @User.Identity.Name
+                                        </div>
+                                    }
+                                    <a class="dropdown-item" href="@Url.Action("Profile", "Account")">Profile</a>
+                                    <a class="dropdown-item" href="@Url.Action("Orders", "Account")">My Orders</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="@Url.Action("Logout", "Account")">Log Out</a>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li><a href="@Url.Action("Login", "Account")">LOGIN</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- banner section start -->
+    @if (ViewContext.RouteData.Values["controller"].ToString() == "Home" && ViewContext.RouteData.Values["action"].ToString() == "Index")
+    {
+    <div class="banner_section layout_padding">
+        <div class="container">
+            <div id="costum_slider" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <h1 class="furniture_text">FURNITURE</h1>
+                        <p class="there_text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some fo</p>
+                        <div class="contact_bt_main">
+                            <div class="contact_bt"><a href="@Url.Action("Contact", "Home")">Contact Us</a></div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h1 class="furniture_text">FURNITURE</h1>
+                        <p class="there_text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some fo</p>
+                        <div class="contact_bt_main">
+                            <div class="contact_bt"><a href="@Url.Action("Contact", "Home")">Contact Us</a></div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h1 class="furniture_text">FURNITURE</h1>
+                        <p class="there_text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some fo</p>
+                        <div class="contact_bt_main">
+                            <div class="contact_bt"><a href="@Url.Action("Contact", "Home")">Contact Us</a></div>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#costum_slider" role="button" data-slide="prev">
+                    <i class=""><img src="~/Content/images/left-arrow.png"></i>
+                </a>
+                <a class="carousel-control-next" href="#costum_slider" role="button" data-slide="next">
+                    <i class=""><img src="~/Content/images/right-arrow.png"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    }
+    <!-- banner section end -->
+</div>
+<!-- header section end -->
+    @RenderBody()
+<!-- footer section start -->
+<div class="footer_section layout_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <h1 class="customer_text">INFORMATION</h1>
+                <p class="footer_lorem_text">There are many variat
+                    ions of passages of L
+                    orem Ipsum available
+                    , but the majority h
+                    ave suffered altera
+                    tion in some form, by
+                </p>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <h1 class="customer_text">LET US HELP YOU</h1>
+                <p class="footer_lorem_text">There are many variat
+                    ions of passages of L
+                    orem Ipsum available
+                    , but the majority h
+                    ave suffered altera
+                    tion in some form, by
+                </p>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <h1 class="customer_text">UseFul Links</h1>
+                <p class="footer_lorem_text1">About Us<br>
+                    Careers<br>
+                    Sell on shopee<br>
+                    Press & News<br>
+                    Competitions<br>
+                    Terms & Conditions
+                </p>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <h1 class="customer_text">OUR Design</h1>
+                <p class="footer_lorem_text">There are many variat
+                    ions of passages of L
+                    orem Ipsum available
+                    , but the majority h
+                    ave suffered altera
+                    tion in some form, by
+                </p>
+            </div>
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Enter your email" aria-label="Enter your email" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2"><a href="#">Subscribe</a></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  footer section end -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", required: false)
+
+<script>
+    $(document).ready(function() {
+        // Активирует выпадающее меню при клике
+        $('.dropdown-toggle').dropdown();
+        
+        // Добавляем классы для поддержки Bootstrap dropdown
+        $('.dropdown-menu').addClass('dropdown-menu-right');
+    });
+</script>
+</body>
+</html>
