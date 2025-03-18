@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>@ViewBag.Title - Vintage Fur</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/css/bootstrap.min.css">
+    <!-- auth css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/css/auth.css">
+    <!-- Responsive-->
+    <link rel="stylesheet" href="~/Content/css/responsive.css">
+    <!-- fevicon -->
+    <link rel="icon" href="~/Content/images/fevicon.png" type="image/gif" />
+    <!-- icons -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+</head>
+<body class="auth-theme">
+<!-- header section start -->
+<div class="header_section dark-header">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="logo"><a href="@Url.Action("Index", "Home")"><img src="~/Content/images/logo.png"></a></div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Services", "Home")">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("About", "Home")">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Shop", "Home")">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Contact", "Home")">Contact</a>
+                    </li>
+                </ul>
+                <div class="search_icon">
+                    <ul>
+                        <li><a href="#"><img src="~/Content/images/search-icon.png"></a></li>
+                        @if (Request.IsAuthenticated)
+                        {
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    @(TempData["UserName"] ?? User.Identity.Name) <b class="caret"></b>
+                                </a>
+                                <div class="dropdown-menu">
+                                    @if (TempData["UserRole"]?.ToString() == "Admin")
+                                    {
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Admin")">Admin Panel</a>
+                                    }
+                                    <a class="dropdown-item" href="@Url.Action("Profile", "Account")">Profile</a>
+                                    <a class="dropdown-item" href="@Url.Action("Orders", "Account")">My Orders</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="@Url.Action("Logout", "Account")">Log Out</a>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li><a href="@Url.Action("Login", "Account")">LOGIN</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+<!-- header section end -->
+
+<!-- main content -->
+<div class="auth-main">
+    @RenderBody()
+</div>
+<!-- main content end -->
+
+<!-- footer section start -->
+<footer class="auth-footer-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <p>&copy; @DateTime.Now.Year - Vintage Fur - All Rights Reserved</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- footer section end -->
+
+<!-- scripts -->
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", required: false)
+
+<script>
+    $(document).ready(function() {
+        // Активирует выпадающее меню при клике
+        $('.dropdown-toggle').dropdown();
+        
+        // Добавляем классы для поддержки Bootstrap dropdown
+        $('.dropdown-menu').addClass('dropdown-menu-right');
+    });
+</script>
+</body>
+</html> 
