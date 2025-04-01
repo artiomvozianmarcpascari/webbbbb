@@ -1,0 +1,9 @@
+<a href="@Url.Action("Index", "Cart")" class="cart-icon" style="position: relative; display: inline-block; margin-left: 15px;">
+    <i class="fa fa-shopping-cart" style="font-size: 1.5em;"></i>
+    @if (ViewBag.CartCount > 0)
+    {
+        <span class="cart-badge" style="position: absolute; top: -8px; right: -8px; background-color: #8B4513; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.8em; display: flex; align-items: center; justify-content: center;">
+            @ViewBag.CartCount
+        </span>
+    }
+</a> 
