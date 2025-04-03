@@ -1,0 +1,175 @@
+@model List<Vintagefur.Domain.Models.Product>
+@{
+    ViewBag.Title = "Shop";
+}
+
+<style>
+    /* ----- Variables ----- */
+    :root {
+        --color-primary: #4c4c4c;
+        --color-secondary: #a6a6a6;
+        --color-highlight: #8B4513;
+        --color-background: #f7f2e9;
+    }
+
+    /* ----- Product Card Styles ----- */
+    .shop-container {
+        padding: 50px 0;
+        background-color: var(--color-background);
+    }
+
+    .shop-title {
+        text-align: center;
+        margin-bottom: 40px;
+        color: var(--color-highlight);
+    }
+
+    .shop-description {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 40px;
+        color: var(--color-primary);
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 20px;
+    }
+
+    .product-card {
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .product-image-container {
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(135deg, #e6d2b5, #d4b996);
+    }
+
+    .product-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.1);
+    }
+
+    .product-info {
+        padding: 20px;
+    }
+
+    .product-category {
+        font-size: 14px;
+        color: var(--color-secondary);
+        margin-bottom: 5px;
+    }
+
+    .product-name {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-bottom: 10px;
+    }
+
+    .product-price {
+        font-size: 22px;
+        font-weight: bold;
+        color: var(--color-highlight);
+        margin: 15px 0;
+    }
+
+    .product-details-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: var(--color-highlight);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    .product-details-btn:hover {
+        background-color: #6b3510;
+        color: #fff;
+    }
+
+    .product-controls {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .control-btn {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .control-btn:hover {
+        background-color: #fff;
+    }
+
+    .control-btn i {
+        color: var(--color-highlight);
+    }
+</style>
+
+<div class="shop-container">
+    <div class="container">
+        <h1 class="shop-title">OUR COLLECTION</h1>
+        <p class="shop-description">Exquisite fur products, created with love and attention to detail. Each item is unique and will emphasize your individuality.</p>
+
+        <div class="product-grid">
+            @foreach (var product in Model)
+            {
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="@product.ImageUrl" alt="@product.Name" class="product-image">
+                        <div class="product-controls">
+                            <div class="control-btn">
+                                <i class="fa fa-heart-o"></i>
+                            </div>
+                            <div class="control-btn">
+                                <i class="fa fa-share"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">@(product.Category?.Name ?? "Uncategorized")</div>
+                        <h3 class="product-name">@product.Name</h3>
+                        <p class="product-price">@product.Price.ToString("C")</p>
+                        <a href="@Url.Action("Details", "Shop", new { id = product.Id })" class="product-details-btn">Details</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div> 
