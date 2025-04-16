@@ -1,0 +1,164 @@
+@model Vintagefur.Domain.Models.Order
+@{
+    ViewBag.Title = "Order Confirmed";
+}
+
+<style type="text/css">
+    .confirmation-container {
+        max-width: 800px;
+        margin: 40px auto;
+    }
+    
+    .confirmation-box {
+        background-color: #f7f2e9;
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .confirmation-icon {
+        font-size: 60px;
+        color: #5cb85c;
+        margin-bottom: 20px;
+    }
+    
+    .order-details {
+        background-color: #fff;
+        border: 1px solid #e5d9c8;
+        border-radius: 8px;
+        padding: 30px;
+        margin-top: 30px;
+    }
+    
+    .details-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #e5d9c8;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .customer-info, .shipping-info {
+        margin-bottom: 30px;
+    }
+    
+    .order-items {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    
+    .order-items th {
+        background-color: #f7f2e9;
+        padding: 10px;
+        text-align: left;
+    }
+    
+    .order-items td {
+        padding: 10px;
+        border-bottom: 1px solid #e5d9c8;
+    }
+    
+    .order-total {
+        text-align: right;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+    
+    .btn-primary {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #8B4513;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background-color: #6b3510;
+    }
+    
+    @@media screen and (max-width: 768px) {
+        .details-header {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="container confirmation-container">
+    <div class="confirmation-box">
+        <div class="confirmation-icon">
+            <i class="fa fa-check-circle"></i>
+        </div>
+        <h2>Order Successfully Placed!</h2>
+        <p>Thank you for your order. Your order number is: <strong>@Model.Id.ToString("D6")</strong></p>
+        <p>We have sent a confirmation email to: <strong>@Model.Customer.Email</strong></p>
+        <a href="@Url.Action("Index", "Shop")" class="btn-primary">Continue Shopping</a>
+    </div>
+    
+    <div class="order-details">
+        <div class="details-header">
+            <div>
+                <h3>Order #@Model.Id.ToString("D6")</h3>
+                <p>Order Date: @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</p>
+                <p>Status: @Model.Status</p>
+            </div>
+            <div>
+                <h3>Total: $@Model.TotalAmount.ToString("N2")</h3>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 customer-info">
+                <h4>Customer Information</h4>
+                <p><strong>@Model.Customer.FirstName @Model.Customer.LastName</strong></p>
+                <p>Email: @Model.Customer.Email</p>
+            </div>
+            
+            <div class="col-md-6 shipping-info">
+                <h4>Shipping Address</h4>
+                <p>@Model.ShippingAddress</p>
+                <p>@Model.ShippingCity, @Model.ShippingPostalCode</p>
+                <p>@Model.ShippingCountry</p>
+            </div>
+        </div>
+        
+        <h4>Order Items</h4>
+        <table class="order-items">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderItems)
+                {
+                    <tr>
+                        <td>@item.Product.Name</td>
+                        <td>$@item.UnitPrice.ToString("N2")</td>
+                        <td>@item.Quantity</td>
+                        <td>$@((item.UnitPrice * item.Quantity).ToString("N2"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+        <div class="order-total">
+            Total: $@Model.TotalAmount.ToString("N2")
+        </div>
+        
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <div class="order-notes mt-4">
+                <h4>Order Notes</h4>
+                <p>@Model.Notes</p>
+            </div>
+        }
+    </div>
+</div> 
