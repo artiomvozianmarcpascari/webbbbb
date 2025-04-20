@@ -1,0 +1,72 @@
+@model IEnumerable<Vintagefur.Domain.Models.Customer>
+@{
+    ViewBag.Title = "Customers";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Customers</h2>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped" id="customersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Registration Date</th>
+                        <th>Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.FirstName @item.LastName</td>
+                            <td>@item.Email</td>
+                            <td>@item.RegistrationDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.City) && !string.IsNullOrEmpty(item.Country))
+                                {
+                                    <span>@item.City, @item.Country</span>
+                                }
+                                else if (!string.IsNullOrEmpty(item.City))
+                                {
+                                    <span>@item.City</span>
+                                }
+                                else if (!string.IsNullOrEmpty(item.Country))
+                                {
+                                    <span>@item.Country</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not specified</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("CustomerDetails", "Admin", new { id = item.Id })" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            $('#customersTable').DataTable({
+                "order": [[ 3, "desc" ]]
+            });
+        });
+    </script>
+} 
