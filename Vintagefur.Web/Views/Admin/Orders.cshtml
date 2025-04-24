@@ -1,0 +1,95 @@
+@model IEnumerable<Vintagefur.Domain.Models.Order>
+@{
+    ViewBag.Title = "Orders Management";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Orders Management</h2>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped" id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>
+                                @if (item.Customer != null)
+                                {
+                                    <a href="@Url.Action("CustomerDetails", "Admin", new { id = item.CustomerId })">
+                                        @item.Customer.FirstName @item.Customer.LastName
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>Unknown</span>
+                                }
+                            </td>
+                            <td>@item.OrderDate.ToString("dd MMM yyyy HH:mm")</td>
+                            <td>$@item.TotalAmount.ToString("N2")</td>
+                            <td>
+                                @{
+                                    string badgeClass = "badge-secondary";
+                                    
+                                    switch (item.Status)
+                                    {
+                                        case Vintagefur.Domain.Models.OrderStatus.Pending:
+                                            badgeClass = "badge-warning";
+                                            break;
+                                        case Vintagefur.Domain.Models.OrderStatus.Processing:
+                                            badgeClass = "badge-info";
+                                            break;
+                                        case Vintagefur.Domain.Models.OrderStatus.Shipped:
+                                            badgeClass = "badge-primary";
+                                            break;
+                                        case Vintagefur.Domain.Models.OrderStatus.Delivered:
+                                            badgeClass = "badge-success";
+                                            break;
+                                        case Vintagefur.Domain.Models.OrderStatus.Cancelled:
+                                            badgeClass = "badge-danger";
+                                            break;
+                                    }
+                                }
+                                <span class="badge @badgeClass">@item.Status</span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="@Url.Action("OrderDetails", "Admin", new { id = item.Id })" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="@Url.Action("EditOrder", "Admin", new { id = item.Id })" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            $('#ordersTable').DataTable({
+                "order": [[ 0, "desc" ]]
+            });
+        });
+    </script>
+} 
