@@ -1,0 +1,86 @@
+@{
+    ViewBag.Title = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-dashboard">
+    <h2>Admin Dashboard</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Products</h5>
+                    <p class="card-text" style="font-size: 2rem;">@ViewBag.ProductCount</p>
+                    <a href="@Url.Action("Products", "Admin")" class="btn btn-light btn-sm">Manage Products</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Categories</h5>
+                    <p class="card-text" style="font-size: 2rem;">@ViewBag.CategoryCount</p>
+                    <a href="@Url.Action("Categories", "Admin")" class="btn btn-light btn-sm">Manage Categories</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Orders</h5>
+                    <p class="card-text" style="font-size: 2rem;">@ViewBag.OrderCount</p>
+                    <a href="@Url.Action("Orders", "Admin")" class="btn btn-light btn-sm">Manage Orders</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Customers</h5>
+                    <p class="card-text" style="font-size: 2rem;">@ViewBag.CustomerCount</p>
+                    <a href="@Url.Action("Customers", "Admin")" class="btn btn-light btn-sm">View Customers</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-danger text-white">
+                    Pending Orders
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@ViewBag.PendingOrdersCount orders need attention</h5>
+                    <p class="card-text">Process pending orders to ensure timely delivery</p>
+                    <a href="@Url.Action("Orders", "Admin")" class="btn btn-outline-danger">View Orders</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-dark text-white">
+                    Quick Links
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="@Url.Action("CreateProduct", "Admin")" class="list-group-item list-group-item-action">
+                            <i class="fa fa-plus mr-2"></i> Add New Product
+                        </a>
+                        <a href="@Url.Action("CreateCategory", "Admin")" class="list-group-item list-group-item-action">
+                            <i class="fa fa-folder-plus mr-2"></i> Add New Category
+                        </a>
+                        <a href="@Url.Action("Orders", "Admin")" class="list-group-item list-group-item-action">
+                            <i class="fa fa-shipping-fast mr-2"></i> Process Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

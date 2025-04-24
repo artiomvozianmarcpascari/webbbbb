@@ -1,0 +1,103 @@
+@model Vintagefur.Domain.Models.Product
+@{
+    ViewBag.Title = "Edit Product";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Edit Product</h2>
+    <a href="@Url.Action("Products", "Admin")" class="btn btn-secondary">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Products
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        @using (Html.BeginForm("EditProduct", "Admin", FormMethod.Post, new { @class = "needs-validation", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.CreatedDate)
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Name, "Product Name")
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Description, "Description")
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "5" })
+                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.CategoryId, "Category")
+                        @Html.DropDownListFor(m => m.CategoryId, ViewBag.Categories as SelectList, "-- Select Category --", new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(m => m.CategoryId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.MaterialId, "Material")
+                                @Html.DropDownListFor(m => m.MaterialId, ViewBag.Materials as SelectList, "-- Select Material --", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.MaterialId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.StyleId, "Style")
+                                @Html.DropDownListFor(m => m.StyleId, ViewBag.Styles as SelectList, "-- Select Style --", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.StyleId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Price, "Price ($)")
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
+                            @Html.TextBoxFor(m => m.Price, "{0:F2}", new { @class = "form-control", type = "number", step = "0.01", min = "0", required = "required" })
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ImageUrl, "Image URL")
+                        @Html.TextBoxFor(m => m.ImageUrl, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.ImageUrl, "", new { @class = "text-danger" })
+                        
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="mt-2 text-center">
+                                <img src="@Model.ImageUrl" class="img-thumbnail" style="max-height: 150px;" />
+                            </div>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            @Html.CheckBoxFor(m => m.IsAvailable, new { @class = "custom-control-input", id = "availableSwitch" })
+                            <label class="custom-control-label" for="availableSwitch">Available for purchase</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-4">
+                        <i class="fas fa-save mr-2"></i> Update Product
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+} 
