@@ -13,6 +13,9 @@
         <a href="@Url.Action("EditOrder", "Admin", new { id = Model.Id })" class="btn btn-primary">
             <i class="fas fa-edit mr-2"></i> Edit Order
         </a>
+        <a href="@Url.Action("DeleteOrder", "Admin", new { id = Model.Id })" class="btn btn-danger">
+            <i class="fas fa-trash-alt mr-2"></i> Delete Order
+        </a>
     </div>
 </div>
 

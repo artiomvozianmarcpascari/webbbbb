@@ -74,6 +74,9 @@
                                     <a href="@Url.Action("EditOrder", "Admin", new { id = item.Id })" class="btn btn-sm btn-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
+                                    <a href="@Url.Action("DeleteOrder", "Admin", new { id = item.Id })" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

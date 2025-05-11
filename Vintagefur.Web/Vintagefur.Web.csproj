@@ -134,6 +134,7 @@
         </Compile>
         <Compile Include="Models\CartItem.cs" />
         <Compile Include="Models\ShoppingCart.cs" />
+        <Compile Include="Models\ViewModels\CartViewModel.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
@@ -229,9 +230,13 @@
         <Content Include="Views\Account\Login.cshtml" />
         <Content Include="Views\Account\Register.cshtml" />
         <Content Include="Views\Admin\Categories.cshtml" />
+        <Content Include="Views\Admin\CreateCategory.cshtml" />
         <Content Include="Views\Admin\CreateProduct.cshtml" />
+        <Content Include="Views\Admin\CustomerDetails.cshtml" />
         <Content Include="Views\Admin\Customers.cshtml" />
+        <Content Include="Views\Admin\DeleteOrder.cshtml" />
         <Content Include="Views\Admin\DeleteProduct.cshtml" />
+        <Content Include="Views\Admin\EditCategory.cshtml" />
         <Content Include="Views\Admin\EditOrder.cshtml" />
         <Content Include="Views\Admin\EditProduct.cshtml" />
         <Content Include="Views\Admin\Index.cshtml" />
@@ -250,6 +255,8 @@
         <Content Include="Views\Shared\_CartSummary.cshtml" />
         <Content Include="Views\Shop\Details.cshtml" />
         <Content Include="Views\Shop\Index.cshtml" />
+        <Content Include="Views\Shop\LuxuryShowroom.cshtml" />
+        <Content Include="Views\Shop\VintageCollection.cshtml" />
         <Content Include="Web.config" />
         <Content Include="Web.Debug.config">
             <DependentUpon>Web.config</DependentUpon>
@@ -276,9 +283,9 @@
         <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Vintagefur.Application\Vintagefur.Application.csproj">
+      <ProjectReference Include="..\Vintagefur.BusinessLogic\Vintagefur.BusinessLogic.csproj">
         <Project>{ee94eb25-89bc-491d-ae3b-b7f77805b83c}</Project>
-        <Name>Vintagefur.Application</Name>
+        <Name>Vintagefur.BusinessLogic</Name>
       </ProjectReference>
       <ProjectReference Include="..\Vintagefur.Domain\Vintagefur.Domain.csproj">
         <Project>{66324f9e-1625-4175-83a0-65d7c7c266db}</Project>
