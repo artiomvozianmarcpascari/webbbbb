@@ -4,13 +4,13 @@ using System.Data.Entity;
 using Vintagefur.Domain.Models;
 using Vintagefur.Infrastructure.Data;
 
-namespace Vintagefur.Application.Services
+namespace Vintagefur.BusinessLogic.Services
 {
-    public class ProductService
+    public class ProductServiceBusinessLogic
     {
         private readonly VintagefurDbContext _dbContext;
 
-        public ProductService()
+        public ProductServiceBusinessLogic()
         {
             _dbContext = new VintagefurDbContext();
         }

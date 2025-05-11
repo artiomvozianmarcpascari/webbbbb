@@ -8,8 +8,8 @@
         <ProjectGuid>{EE94EB25-89BC-491D-AE3B-B7F77805B83C}</ProjectGuid>
         <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>Vintagefur.Application</RootNamespace>
-        <AssemblyName>Vintagefur.Application</AssemblyName>
+        <RootNamespace>Vintagefur.BusinessLogic</RootNamespace>
+        <AssemblyName>Vintagefur.BusinessLogic</AssemblyName>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>
@@ -50,18 +50,19 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Interfaces\IAdminService.cs" />
+        <Compile Include="Interfaces\ICartService.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Services\AuthService.cs" />
-        <Compile Include="Services\CustomerService.cs" />
-        <Compile Include="Services\OrderService.cs" />
-        <Compile Include="Services\ProductService.cs" />
+        <Compile Include="Services\AdminServiceBusinessLogic.cs" />
+        <Compile Include="Services\AuthServiceBusinessLogic.cs" />
+        <Compile Include="Services\CartServiceBusinessLogic.cs" />
+        <Compile Include="Services\CustomerServiceBusinessLogic.cs" />
+        <Compile Include="Services\OrderServiceBusinessLogic.cs" />
+        <Compile Include="Services\ProductServiceBusinessLogic.cs" />
     </ItemGroup>
     <ItemGroup>
       <None Include="App.config" />
       <None Include="packages.config" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Interfaces\" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Vintagefur.Domain\Vintagefur.Domain.csproj">

@@ -5,13 +5,13 @@ using System.Data.Entity;
 using Vintagefur.Domain.Models;
 using Vintagefur.Infrastructure.Data;
 
-namespace Vintagefur.Application.Services
+namespace Vintagefur.BusinessLogic.Services
 {
-    public class OrderService
+    public class OrderServiceBusinessLogic
     {
         private readonly VintagefurDbContext _dbContext;
 
-        public OrderService()
+        public OrderServiceBusinessLogic()
         {
             _dbContext = new VintagefurDbContext();
         }

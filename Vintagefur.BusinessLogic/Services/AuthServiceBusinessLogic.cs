@@ -6,13 +6,13 @@ using Vintagefur.Domain.Models;
 using Vintagefur.Infrastructure.Data;
 using System.Data.Entity; // Корректное пространство имен для Include
 
-namespace Vintagefur.Application.Services
+namespace Vintagefur.BusinessLogic.Services
 {
-    public class AuthService
+    public class AuthServiceBusinessLogic
     {
         private readonly VintagefurDbContext _context;
 
-        public AuthService()
+        public AuthServiceBusinessLogic()
         {
             _context = new VintagefurDbContext();
         }

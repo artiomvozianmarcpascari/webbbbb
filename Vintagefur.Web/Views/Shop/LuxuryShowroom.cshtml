@@ -1,0 +1,690 @@
+@{
+    ViewBag.Title = "Luxury Showroom";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Основные стили для страницы эксклюзивного шоурума */
+    .luxury-showroom-page {
+        font-family: 'Playfair Display', serif;
+        color: #1a1a1a;
+        overflow-x: hidden;
+    }
+
+    /* Роскошный хедер */
+    .luxury-header {
+        position: relative;
+        height: 100vh;
+        background-color: #0a0a0a;
+        overflow: hidden;
+    }
+
+    .luxury-header-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.6;
+    }
+
+    .luxury-header-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #fff;
+        width: 80%;
+        max-width: 1000px;
+        z-index: 2;
+    }
+
+    .luxury-header-subtitle {
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 8px;
+        margin-bottom: 2rem;
+        opacity: 0.8;
+    }
+
+    .luxury-header-title {
+        font-size: 5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 2rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .luxury-header-description {
+        font-size: 1.3rem;
+        line-height: 1.8;
+        margin-bottom: 3rem;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .luxury-btn {
+        display: inline-block;
+        padding: 15px 40px;
+        background-color: transparent;
+        border: 2px solid #fff;
+        color: #fff;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .luxury-btn:hover {
+        background-color: #fff;
+        color: #0a0a0a;
+    }
+
+    /* Секция об эксклюзивности */
+    .luxury-exclusivity {
+        padding: 150px 0;
+        background-color: #f9f5f0;
+    }
+
+    .luxury-container {
+        width: 90%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .luxury-section-title {
+        font-size: 3rem;
+        margin-bottom: 3rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .luxury-section-title:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100px;
+        height: 2px;
+        background-color: #c9a77c;
+    }
+
+    .luxury-exclusivity-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+    }
+
+    .luxury-exclusivity-image {
+        width: 100%;
+        box-shadow: 20px 20px 0 #c9a77c;
+    }
+
+    .luxury-exclusivity-content p {
+        font-size: 1.2rem;
+        line-height: 2;
+        margin-bottom: 2rem;
+        color: #333;
+    }
+
+    .luxury-highlight {
+        color: #c9a77c;
+        font-style: italic;
+    }
+
+    /* Секция коллекции */
+    .luxury-collection {
+        padding: 150px 0;
+        background-color: #0a0a0a;
+        color: #fff;
+    }
+
+    .luxury-collection-intro {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 80px;
+    }
+
+    .luxury-collection-intro p {
+        font-size: 1.3rem;
+        line-height: 1.8;
+        color: rgba(255,255,255,0.8);
+    }
+
+    .luxury-collection-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+    }
+
+    .luxury-collection-item {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 3/4;
+    }
+
+    .luxury-collection-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .luxury-collection-item:hover .luxury-collection-image {
+        transform: scale(1.1);
+    }
+
+    .luxury-collection-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 30px;
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        color: #fff;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .luxury-collection-item:hover .luxury-collection-overlay {
+        opacity: 1;
+    }
+
+    .luxury-collection-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .luxury-collection-price {
+        font-size: 1.2rem;
+        color: #c9a77c;
+        margin-bottom: 1rem;
+    }
+
+    .luxury-collection-btn {
+        display: inline-block;
+        padding: 8px 20px;
+        background-color: #c9a77c;
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Секция мастерства */
+    .luxury-craftsmanship {
+        padding: 150px 0;
+        background-color: #fff;
+    }
+
+    .luxury-craftsmanship-intro {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 80px;
+    }
+
+    .luxury-craftsmanship-intro .luxury-section-title {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        display: block;
+    }
+
+    .luxury-craftsmanship-intro .luxury-section-title:after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .luxury-craftsmanship-intro p {
+        font-size: 1.3rem;
+        line-height: 1.8;
+        color: #333;
+    }
+
+    .luxury-craftsmanship-steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+    }
+
+    .luxury-craftsmanship-step {
+        text-align: center;
+    }
+
+    .luxury-step-number {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        background-color: #c9a77c;
+        color: #fff;
+        font-size: 1.5rem;
+        line-height: 60px;
+        border-radius: 50%;
+        margin-bottom: 2rem;
+    }
+
+    .luxury-step-title {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .luxury-step-description {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #666;
+    }
+
+    /* Секция клиентского опыта */
+    .luxury-experience {
+        padding: 150px 0;
+        background-color: #0a0a0a;
+        color: #fff;
+    }
+
+    .luxury-experience-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+    }
+
+    .luxury-experience-image {
+        width: 100%;
+        border: 10px solid #c9a77c;
+    }
+
+    .luxury-experience-content {
+        max-width: 500px;
+    }
+
+    .luxury-experience-content p {
+        font-size: 1.2rem;
+        line-height: 2;
+        margin-bottom: 2rem;
+        color: rgba(255,255,255,0.8);
+    }
+
+    .luxury-features {
+        margin-top: 3rem;
+    }
+
+    .luxury-feature {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .luxury-feature-icon {
+        width: 50px;
+        height: 50px;
+        background-color: #c9a77c;
+        color: #fff;
+        font-size: 1.5rem;
+        line-height: 50px;
+        text-align: center;
+        margin-right: 1.5rem;
+    }
+
+    .luxury-feature-text {
+        font-size: 1.1rem;
+    }
+
+    /* Контактная секция */
+    .luxury-contact {
+        padding: 150px 0;
+        background-color: #f9f5f0;
+    }
+
+    .luxury-contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+    }
+
+    .luxury-contact-form {
+        background-color: #fff;
+        padding: 50px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .luxury-form-group {
+        margin-bottom: 25px;
+    }
+
+    .luxury-label {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .luxury-input,
+    .luxury-textarea {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ddd;
+        font-size: 1rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .luxury-textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+
+    .luxury-submit-btn {
+        display: inline-block;
+        padding: 15px 40px;
+        background-color: #c9a77c;
+        color: #fff;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .luxury-submit-btn:hover {
+        background-color: #b08b5e;
+    }
+
+    .luxury-contact-info {
+        padding: 0 30px;
+    }
+
+    .luxury-contact-item {
+        margin-bottom: 40px;
+    }
+
+    .luxury-contact-title {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .luxury-contact-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background-color: #c9a77c;
+    }
+
+    .luxury-contact-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #666;
+    }
+
+    /* Адаптивные стили */
+    @media (max-width: 1200px) {
+        .luxury-header-title {
+            font-size: 4rem;
+        }
+
+        .luxury-collection-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .luxury-craftsmanship-steps {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .luxury-exclusivity-grid,
+        .luxury-experience-grid,
+        .luxury-contact-grid {
+            grid-template-columns: 1fr;
+            gap: 50px;
+        }
+
+        .luxury-exclusivity-content {
+            order: -1;
+        }
+
+        .luxury-experience-content {
+            max-width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .luxury-header-title {
+            font-size: 3rem;
+        }
+
+        .luxury-header-subtitle {
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+        }
+
+        .luxury-header-description {
+            font-size: 1.1rem;
+        }
+
+        .luxury-collection-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .luxury-craftsmanship-steps {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="luxury-showroom-page">
+    
+    <!-- Роскошный хедер -->
+    <section class="luxury-header">
+        <video class="luxury-header-video" autoplay muted loop>
+            <source src="/Content/videos/luxury-fur.mp4" type="video/mp4">
+        </video>
+        <div class="luxury-header-content">
+            <h3 class="luxury-header-subtitle">Эксклюзивная коллекция</h3>
+            <h1 class="luxury-header-title">Роскошный шоурум Vintagefur</h1>
+            <p class="luxury-header-description">Погрузитесь в мир изысканных меховых изделий, созданных лучшими мастерами с использованием уникальных техник и материалов высочайшего качества.</p>
+            <a href="#collection" class="luxury-btn">Открыть коллекцию</a>
+        </div>
+    </section>
+
+    <!-- Об эксклюзивности -->
+    <section class="luxury-exclusivity">
+        <div class="luxury-container">
+            <div class="luxury-exclusivity-grid">
+                <div class="luxury-exclusivity-content">
+                    <h2 class="luxury-section-title">Эксклюзивность в каждой детали</h2>
+                    <p>В нашем люксовом шоуруме представлены уникальные меховые изделия, доступные только <span class="luxury-highlight">избранным клиентам</span>. Каждое изделие создается вручную мастерами с многолетним опытом, передающими свое искусство из поколения в поколение.</p>
+                    <p>Мы отбираем только лучшие материалы со всего мира: сибирский соболь исключительного качества, канадская норка, редкие виды шиншиллы и другие благородные меха, которые отличаются непревзойденной мягкостью, блеском и прочностью.</p>
+                    <p>Приглашаем вас на индивидуальную консультацию с нашим стилистом, который поможет подобрать идеальное меховое изделие, отражающее вашу индивидуальность и статус.</p>
+                </div>
+                <div>
+                    <img src="/images/products/luxury-showroom.jpg" alt="Эксклюзивный шоурум" class="luxury-exclusivity-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Коллекция -->
+    <section class="luxury-collection" id="collection">
+        <div class="luxury-container">
+            <div class="luxury-collection-intro">
+                <h2 class="luxury-section-title">Эксклюзивная коллекция</h2>
+                <p>Представляем вашему вниманию избранные модели из нашей эксклюзивной коллекции, доступные для предварительного заказа. Количество изделий строго ограничено, что гарантирует их уникальность и эксклюзивность.</p>
+            </div>
+            <div class="luxury-collection-grid">
+                <div class="luxury-collection-item">
+                    <img src="/images/products/luxury-1.jpg" alt="Манто из баргузинского соболя" class="luxury-collection-image">
+                    <div class="luxury-collection-overlay">
+                        <h3 class="luxury-collection-title">Манто из баргузинского соболя</h3>
+                        <p class="luxury-collection-price">$120,000</p>
+                        <a href="#" class="luxury-collection-btn">Подробнее</a>
+                    </div>
+                </div>
+                <div class="luxury-collection-item">
+                    <img src="/images/products/luxury-2.jpg" alt="Пальто из белой шиншиллы" class="luxury-collection-image">
+                    <div class="luxury-collection-overlay">
+                        <h3 class="luxury-collection-title">Пальто из белой шиншиллы</h3>
+                        <p class="luxury-collection-price">$85,000</p>
+                        <a href="#" class="luxury-collection-btn">Подробнее</a>
+                    </div>
+                </div>
+                <div class="luxury-collection-item">
+                    <img src="/images/products/luxury-3.jpg" alt="Жакет из рыси" class="luxury-collection-image">
+                    <div class="luxury-collection-overlay">
+                        <h3 class="luxury-collection-title">Жакет из канадской рыси</h3>
+                        <p class="luxury-collection-price">$65,000</p>
+                        <a href="#" class="luxury-collection-btn">Подробнее</a>
+                    </div>
+                </div>
+                <div class="luxury-collection-item">
+                    <img src="/images/products/luxury-4.jpg" alt="Шуба из черной норки" class="luxury-collection-image">
+                    <div class="luxury-collection-overlay">
+                        <h3 class="luxury-collection-title">Шуба из черной норки BlackGlama</h3>
+                        <p class="luxury-collection-price">$48,000</p>
+                        <a href="#" class="luxury-collection-btn">Подробнее</a>
+                    </div>
+                </div>
+                <div class="luxury-collection-item">
+                    <img src="/images/products/luxury-5.jpg" alt="Жилет из лисы" class="luxury-collection-image">
+                    <div class="luxury-collection-overlay">
+                        <h3 class="luxury-collection-title">Жилет из серебристо-черной лисы</h3>
+                        <p class="luxury-collection-price">$35,000</p>
+                        <a href="#" class="luxury-collection-btn">Подробнее</a>
+                    </div>
+                </div>
+                <div class="luxury-collection-item">
+                    <img src="/images/products/luxury-6.jpg" alt="Пончо из голубой норки" class="luxury-collection-image">
+                    <div class="luxury-collection-overlay">
+                        <h3 class="luxury-collection-title">Пончо из голубой норки</h3>
+                        <p class="luxury-collection-price">$42,000</p>
+                        <a href="#" class="luxury-collection-btn">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Мастерство -->
+    <section class="luxury-craftsmanship">
+        <div class="luxury-container">
+            <div class="luxury-craftsmanship-intro">
+                <h2 class="luxury-section-title">Непревзойденное мастерство</h2>
+                <p>Каждое изделие нашей коллекции создается вручную опытными мастерами, которые посвятили свою жизнь искусству работы с мехом. Процесс создания одного изделия может занимать до нескольких месяцев кропотливой работы.</p>
+            </div>
+            <div class="luxury-craftsmanship-steps">
+                <div class="luxury-craftsmanship-step">
+                    <div class="luxury-step-number">1</div>
+                    <h3 class="luxury-step-title">Отбор материала</h3>
+                    <p class="luxury-step-description">Наши эксперты отбирают только лучшие шкурки с идеальной текстурой, цветом и плотностью меха, отвечающие самым высоким стандартам качества.</p>
+                </div>
+                <div class="luxury-craftsmanship-step">
+                    <div class="luxury-step-number">2</div>
+                    <h3 class="luxury-step-title">Дизайн и проектирование</h3>
+                    <p class="luxury-step-description">Наши дизайнеры создают уникальные эскизы с учетом последних тенденций моды и индивидуальных пожеланий клиента.</p>
+                </div>
+                <div class="luxury-craftsmanship-step">
+                    <div class="luxury-step-number">3</div>
+                    <h3 class="luxury-step-title">Ручная работа</h3>
+                    <p class="luxury-step-description">Мастера вручную кроят и сшивают шкурки, используя традиционные техники и современные технологии для создания безупречного изделия.</p>
+                </div>
+                <div class="luxury-craftsmanship-step">
+                    <div class="luxury-step-number">4</div>
+                    <h3 class="luxury-step-title">Финальная отделка</h3>
+                    <p class="luxury-step-description">Каждое изделие проходит тщательную проверку качества и финальную отделку, чтобы гарантировать совершенство в каждой детали.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Клиентский опыт -->
+    <section class="luxury-experience">
+        <div class="luxury-container">
+            <div class="luxury-experience-grid">
+                <div>
+                    <img src="/images/products/luxury-service.jpg" alt="Персональное обслуживание" class="luxury-experience-image">
+                </div>
+                <div class="luxury-experience-content">
+                    <h2 class="luxury-section-title">Уникальный клиентский опыт</h2>
+                    <p>В нашем эксклюзивном шоуруме мы предлагаем не просто покупку мехового изделия, а уникальный опыт погружения в мир роскоши и высокого стиля.</p>
+                    <p>Мы создаем особую атмосферу для каждого клиента, предлагая индивидуальный подход и безупречный сервис на всех этапах взаимодействия.</p>
+                    <div class="luxury-features">
+                        <div class="luxury-feature">
+                            <div class="luxury-feature-icon">✓</div>
+                            <div class="luxury-feature-text">Индивидуальные консультации с ведущими стилистами</div>
+                        </div>
+                        <div class="luxury-feature">
+                            <div class="luxury-feature-icon">✓</div>
+                            <div class="luxury-feature-text">Возможность создания изделия по индивидуальным меркам</div>
+                        </div>
+                        <div class="luxury-feature">
+                            <div class="luxury-feature-icon">✓</div>
+                            <div class="luxury-feature-text">Эксклюзивные мероприятия для VIP-клиентов</div>
+                        </div>
+                        <div class="luxury-feature">
+                            <div class="luxury-feature-icon">✓</div>
+                            <div class="luxury-feature-text">Пожизненное обслуживание приобретенных изделий</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Контакты -->
+    <section class="luxury-contact">
+        <div class="luxury-container">
+            <div class="luxury-contact-grid">
+                <div class="luxury-contact-form">
+                    <h2 class="luxury-section-title">Запись на индивидуальную презентацию</h2>
+                    <form>
+                        <div class="luxury-form-group">
+                            <label for="name" class="luxury-label">Имя</label>
+                            <input type="text" id="name" class="luxury-input" required>
+                        </div>
+                        <div class="luxury-form-group">
+                            <label for="phone" class="luxury-label">Телефон</label>
+                            <input type="tel" id="phone" class="luxury-input" required>
+                        </div>
+                        <div class="luxury-form-group">
+                            <label for="email" class="luxury-label">Email</label>
+                            <input type="email" id="email" class="luxury-input" required>
+                        </div>
+                        <div class="luxury-form-group">
+                            <label for="message" class="luxury-label">Комментарий</label>
+                            <textarea id="message" class="luxury-textarea"></textarea>
+                        </div>
+                        <button type="submit" class="luxury-submit-btn">Отправить заявку</button>
+                    </form>
+                </div>
+                <div class="luxury-contact-info">
+                    <div class="luxury-contact-item">
+                        <h3 class="luxury-contact-title">Адрес шоурума</h3>
+                        <p class="luxury-contact-text">г. Москва, ул. Тверская, 15<br>Вход по предварительной записи</p>
+                    </div>
+                    <div class="luxury-contact-item">
+                        <h3 class="luxury-contact-title">Контактная информация</h3>
+                        <p class="luxury-contact-text">Телефон: +7 (495) 123-45-67<br>Email: vip@vintagefur.com</p>
+                    </div>
+                    <div class="luxury-contact-item">
+                        <h3 class="luxury-contact-title">Часы работы</h3>
+                        <p class="luxury-contact-text">Пн-Пт: 11:00 - 20:00<br>Сб: 12:00 - 18:00<br>Вс: по предварительной записи</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div> 

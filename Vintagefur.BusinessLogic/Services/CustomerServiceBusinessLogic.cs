@@ -3,13 +3,13 @@ using System.Linq;
 using Vintagefur.Domain.Models;
 using Vintagefur.Infrastructure.Data;
 
-namespace Vintagefur.Application.Services
+namespace Vintagefur.BusinessLogic.Services
 {
-    public class CustomerService
+    public class CustomerServiceBusinessLogic
     {
         private readonly VintagefurDbContext _dbContext;
 
-        public CustomerService()
+        public CustomerServiceBusinessLogic()
         {
             _dbContext = new VintagefurDbContext();
         }

@@ -1,0 +1,154 @@
+@model Vintagefur.Domain.Models.Order
+@{
+    ViewBag.Title = "Delete Order";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Delete Order #@Model.Id.ToString("D6")</h2>
+    <a href="@Url.Action("Orders", "Admin")" class="btn btn-secondary">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Orders
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="alert alert-danger">
+            <h4><i class="fas fa-exclamation-triangle mr-2"></i> Warning!</h4>
+            <p>Are you sure you want to delete this order? This action cannot be undone and will permanently remove the order and all its items.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Order Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Order ID:</th>
+                                <td>@Model.Id.ToString("D6")</td>
+                            </tr>
+                            <tr>
+                                <th>Order Date:</th>
+                                <td>@Model.OrderDate.ToString("dd MMM yyyy HH:mm")</td>
+                            </tr>
+                            <tr>
+                                <th>Status:</th>
+                                <td>
+                                    @{
+                                        string badgeClass = "badge-secondary";
+                                        
+                                        switch (Model.Status)
+                                        {
+                                            case Vintagefur.Domain.Models.OrderStatus.Pending:
+                                                badgeClass = "badge-warning";
+                                                break;
+                                            case Vintagefur.Domain.Models.OrderStatus.Processing:
+                                                badgeClass = "badge-info";
+                                                break;
+                                            case Vintagefur.Domain.Models.OrderStatus.Shipped:
+                                                badgeClass = "badge-primary";
+                                                break;
+                                            case Vintagefur.Domain.Models.OrderStatus.Delivered:
+                                                badgeClass = "badge-success";
+                                                break;
+                                            case Vintagefur.Domain.Models.OrderStatus.Cancelled:
+                                                badgeClass = "badge-danger";
+                                                break;
+                                        }
+                                    }
+                                    <span class="badge @badgeClass">@Model.Status</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Total Amount:</th>
+                                <td><strong>$@Model.TotalAmount.ToString("N2")</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Customer Information</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Customer != null)
+                        {
+                            <h6>@Model.Customer.FirstName @Model.Customer.LastName</h6>
+                            <p>
+                                <i class="fas fa-envelope mr-2"></i> @Model.Customer.Email
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-muted">Customer information not available</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Order Items to be Deleted</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th class="text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.OrderItems != null && Model.OrderItems.Count > 0)
+                        {
+                            foreach (var item in Model.OrderItems)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (item.Product != null)
+                                        {
+                                            <span>@item.Product.Name</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Product #@item.ProductId</span>
+                                        }
+                                    </td>
+                                    <td>$@item.UnitPrice.ToString("N2")</td>
+                                    <td>@item.Quantity</td>
+                                    <td class="text-right">$@((item.UnitPrice * item.Quantity).ToString("N2"))</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">No items in this order</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        @using (Html.BeginForm("DeleteOrder", "Admin", new { id = Model.Id }, FormMethod.Post, new { @class = "mt-4" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group text-right">
+                <a href="@Url.Action("Orders", "Admin")" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash-alt mr-2"></i> Confirm Delete
+                </button>
+            </div>
+        }
+    </div>
+</div> 
