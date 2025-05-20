@@ -2,30 +2,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Vintagefur.Application.Services;
+using Vintagefur.BusinessLogic.Interfaces;
+using Vintagefur.BusinessLogic.Services;
 using Vintagefur.Domain.Models;
 using Vintagefur.Web.Models;
+using Vintagefur.Web.Models.ViewModels;
 
 namespace Vintagefur.Web.Controllers
 {
     public class CheckoutController : Controller
     {
-        private readonly CustomerService _customerService;
-        private readonly OrderService _orderService;
-        private readonly ProductService _productService;
+        private readonly CustomerServiceBusinessLogic _customerServiceBusinessLogic;
+        private readonly OrderServiceBusinessLogic _orderServiceBusinessLogic;
+        private readonly ProductServiceBusinessLogic _productServiceBusinessLogic;
+        private readonly ICartService _cartService;
 
         public CheckoutController()
         {
-            _customerService = new CustomerService();
-            _orderService = new OrderService();
-            _productService = new ProductService();
+            _customerServiceBusinessLogic = new CustomerServiceBusinessLogic();
+            _orderServiceBusinessLogic = new OrderServiceBusinessLogic();
+            _productServiceBusinessLogic = new ProductServiceBusinessLogic();
+            _cartService = new CartServiceBusinessLogic();
         }
 
         // GET: Checkout
         public ActionResult Index()
         {
-            var cart = ShoppingCart.GetCart(HttpContext);
-            if (cart.CartItems.Count == 0)
+            var cart = _cartService.GetCart(HttpContext);
+            var viewModel = new CartViewModel(cart);
+            if (viewModel.CartItems.Count == 0)
             {
                 return RedirectToAction("Index", "Cart");
             }
@@ -44,15 +49,16 @@ namespace Vintagefur.Web.Controllers
                 return View("Index", customer);
             }
 
-            var cart = ShoppingCart.GetCart(HttpContext);
-            if (cart.CartItems.Count == 0)
+            var cart = _cartService.GetCart(HttpContext);
+            var viewModel = new CartViewModel(cart);
+            if (viewModel.CartItems.Count == 0)
             {
                 ModelState.AddModelError("", "Ваша корзина пуста");
                 return View("Index", customer);
             }
 
             // Поиск существующего клиента по email или создание нового
-            var existingCustomer = _customerService.GetCustomerByEmail(customer.Email);
+            var existingCustomer = _customerServiceBusinessLogic.GetCustomerByEmail(customer.Email);
             int customerId;
 
             if (existingCustomer != null)
@@ -61,12 +67,12 @@ namespace Vintagefur.Web.Controllers
                 
                 // Обновим данные клиента, если изменились
                 customer.Id = customerId;
-                _customerService.UpdateCustomer(customer);
+                _customerServiceBusinessLogic.UpdateCustomer(customer);
             }
             else
             {
                 // Создаем нового клиента
-                customerId = _customerService.CreateCustomer(
+                customerId = _customerServiceBusinessLogic.CreateCustomer(
                     customer.FirstName,
                     customer.LastName,
                     customer.Email,
@@ -80,9 +86,9 @@ namespace Vintagefur.Web.Controllers
 
             // Создаем элементы заказа из корзины
             var orderItems = new List<OrderItem>();
-            foreach (var item in cart.CartItems)
+            foreach (var item in viewModel.CartItems)
             {
-                var product = _productService.GetProductById(item.ProductId);
+                var product = _productServiceBusinessLogic.GetProductById(item.ProductId);
                 if (product != null)
                 {
                     orderItems.Add(new OrderItem
@@ -97,7 +103,7 @@ namespace Vintagefur.Web.Controllers
             if (orderItems.Count > 0)
             {
                 // Создаем заказ
-                int orderId = _orderService.CreateOrder(
+                int orderId = _orderServiceBusinessLogic.CreateOrder(
                     customer,
                     orderItems,
                     customer.Address,
@@ -108,8 +114,7 @@ namespace Vintagefur.Web.Controllers
                 );
 
                 // Очищаем корзину после оформления заказа
-                cart.Clear();
-                cart.SaveToSession(HttpContext);
+                _cartService.ClearCart(HttpContext);
 
                 // Перенаправление на страницу подтверждения заказа
                 return RedirectToAction("OrderConfirmation", new { id = orderId });
@@ -122,7 +127,7 @@ namespace Vintagefur.Web.Controllers
         // GET: Checkout/OrderConfirmation/5
         public ActionResult OrderConfirmation(int id)
         {
-            var order = _orderService.GetOrderById(id);
+            var order = _orderServiceBusinessLogic.GetOrderById(id);
             if (order == null)
             {
                 return HttpNotFound();

@@ -1,39 +1,43 @@
 using System;
 using System.Web.Mvc;
-using Vintagefur.Application.Services;
+using Vintagefur.BusinessLogic.Interfaces;
+using Vintagefur.BusinessLogic.Services;
+using Vintagefur.Domain.Models;
 using Vintagefur.Web.Models;
+using Vintagefur.Web.Models.ViewModels;
 
 namespace Vintagefur.Web.Controllers
 {
     public class CartController : Controller
     {
-        private readonly ProductService _productService;
+        private readonly ICartService _cartService;
+        private readonly ProductServiceBusinessLogic _productServiceBusinessLogic;
 
         public CartController()
         {
-            _productService = new ProductService();
+            _cartService = new CartServiceBusinessLogic();
+            _productServiceBusinessLogic = new ProductServiceBusinessLogic();
         }
 
         // GET: Cart
         public ActionResult Index()
         {
-            var cart = ShoppingCart.GetCart(HttpContext);
-            return View(cart);
+            var cart = _cartService.GetCart(HttpContext);
+            var viewModel = new CartViewModel(cart);
+            return View(viewModel);
         }
 
         // POST: Cart/AddToCart/5
         [HttpPost]
         public ActionResult AddToCart(int id, int quantity = 1)
         {
-            var product = _productService.GetProductById(id);
+            var product = _productServiceBusinessLogic.GetProductById(id);
             if (product == null)
             {
                 return HttpNotFound();
             }
 
-            var cart = ShoppingCart.GetCart(HttpContext);
-            cart.AddItem(product, quantity);
-            cart.SaveToSession(HttpContext);
+            _cartService.AddItemToCart(HttpContext, id, quantity);
 
             // After adding to cart, redirect back to the product page
             if (Request.UrlReferrer != null)
@@ -48,10 +52,7 @@ namespace Vintagefur.Web.Controllers
         [HttpPost]
         public ActionResult RemoveFromCart(int id)
         {
-            var cart = ShoppingCart.GetCart(HttpContext);
-            cart.RemoveItem(id);
-            cart.SaveToSession(HttpContext);
-
+            _cartService.RemoveItemFromCart(HttpContext, id);
             return RedirectToAction("Index");
         }
 
@@ -59,10 +60,7 @@ namespace Vintagefur.Web.Controllers
         [HttpPost]
         public ActionResult UpdateQuantity(int id, int quantity)
         {
-            var cart = ShoppingCart.GetCart(HttpContext);
-            cart.UpdateQuantity(id, quantity);
-            cart.SaveToSession(HttpContext);
-
+            _cartService.UpdateCartItemQuantity(HttpContext, id, quantity);
             return RedirectToAction("Index");
         }
 
@@ -70,10 +68,7 @@ namespace Vintagefur.Web.Controllers
         [HttpPost]
         public ActionResult ClearCart()
         {
-            var cart = ShoppingCart.GetCart(HttpContext);
-            cart.Clear();
-            cart.SaveToSession(HttpContext);
-
+            _cartService.ClearCart(HttpContext);
             return RedirectToAction("Index");
         }
 
@@ -81,8 +76,9 @@ namespace Vintagefur.Web.Controllers
         [ChildActionOnly]
         public ActionResult CartSummary()
         {
-            var cart = ShoppingCart.GetCart(HttpContext);
-            ViewBag.CartCount = cart.TotalQuantity;
+            var cart = _cartService.GetCart(HttpContext);
+            var viewModel = new CartViewModel(cart);
+            ViewBag.CartCount = viewModel.TotalQuantity;
             return PartialView("_CartSummary");
         }
     }

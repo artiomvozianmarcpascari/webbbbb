@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vintagefur.Web", "Vintagefu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vintagefur.Domain", "Vintagefur.Domain\Vintagefur.Domain.csproj", "{66324F9E-1625-4175-83A0-65D7C7C266DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vintagefur.Application", "Vintagefur.Application\Vintagefur.Application.csproj", "{EE94EB25-89BC-491D-AE3B-B7F77805B83C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vintagefur.BusinessLogic", "Vintagefur.BusinessLogic\Vintagefur.BusinessLogic.csproj", "{EE94EB25-89BC-491D-AE3B-B7F77805B83C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vintagefur.Infrastructure", "Vintagefur.Infrastructure\Vintagefur.Infrastructure.csproj", "{2325B42B-B232-4F45-87FD-B0A485142136}"
 EndProject

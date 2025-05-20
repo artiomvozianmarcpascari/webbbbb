@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using Vintagefur.Application.Services;
+using Vintagefur.BusinessLogic.Interfaces;
+using Vintagefur.BusinessLogic.Services;
 using Vintagefur.Domain.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -13,12 +14,14 @@ namespace Vintagefur.Web.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly ProductService _productService;
+        private readonly ProductServiceBusinessLogic _productServiceBusinessLogic;
+        private readonly IAdminService _adminService;
         private readonly VintagefurDbContext _dbContext;
 
         public AdminController()
         {
-            _productService = new ProductService();
+            _productServiceBusinessLogic = new ProductServiceBusinessLogic();
+            _adminService = new AdminServiceBusinessLogic();
             _dbContext = new VintagefurDbContext();
             
             // Диагностика - безопасная
@@ -42,17 +45,11 @@ namespace Vintagefur.Web.Controllers
                 }
             }
             
-            var productCount = _dbContext.Products.Count();
-            var categoryCount = _dbContext.Categories.Count();
-            var orderCount = _dbContext.Orders.Count();
-            var customerCount = _dbContext.Customers.Count();
-            var pendingOrdersCount = _dbContext.Orders.Count(o => o.Status == OrderStatus.Pending);
-
-            ViewBag.ProductCount = productCount;
-            ViewBag.CategoryCount = categoryCount;
-            ViewBag.OrderCount = orderCount;
-            ViewBag.CustomerCount = customerCount;
-            ViewBag.PendingOrdersCount = pendingOrdersCount;
+            ViewBag.ProductCount = _adminService.GetProductCount();
+            ViewBag.CategoryCount = _adminService.GetCategoryCount();
+            ViewBag.OrderCount = _adminService.GetOrderCount();
+            ViewBag.CustomerCount = _adminService.GetCustomerCount();
+            ViewBag.PendingOrdersCount = _adminService.GetPendingOrdersCount();
 
             return View();
         }
@@ -62,11 +59,7 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/Products
         public ActionResult Products()
         {
-            var products = _dbContext.Products
-                .Include(p => p.Category)
-                .Include(p => p.Material)
-                .Include(p => p.Style)
-                .ToList();
+            var products = _adminService.GetAllProducts();
             return View(products);
         }
 
@@ -86,9 +79,7 @@ namespace Vintagefur.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                product.CreatedDate = DateTime.Now;
-                _dbContext.Products.Add(product);
-                _dbContext.SaveChanges();
+                _adminService.CreateProduct(product);
                 return RedirectToAction("Products");
             }
 
@@ -101,7 +92,7 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/EditProduct/5
         public ActionResult EditProduct(int id)
         {
-            var product = _dbContext.Products.Find(id);
+            var product = _adminService.GetProductById(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -120,8 +111,7 @@ namespace Vintagefur.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _dbContext.Entry(product).State = EntityState.Modified;
-                _dbContext.SaveChanges();
+                _adminService.UpdateProduct(product);
                 return RedirectToAction("Products");
             }
 
@@ -134,7 +124,7 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/DeleteProduct/5
         public ActionResult DeleteProduct(int id)
         {
-            var product = _dbContext.Products.Find(id);
+            var product = _adminService.GetProductById(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -147,9 +137,7 @@ namespace Vintagefur.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteProductConfirmed(int id)
         {
-            var product = _dbContext.Products.Find(id);
-            _dbContext.Products.Remove(product);
-            _dbContext.SaveChanges();
+            _adminService.DeleteProduct(id);
             return RedirectToAction("Products");
         }
 
@@ -160,7 +148,7 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/Categories
         public ActionResult Categories()
         {
-            var categories = _dbContext.Categories.ToList();
+            var categories = _adminService.GetAllCategories();
             return View(categories);
         }
 
@@ -177,8 +165,7 @@ namespace Vintagefur.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _dbContext.Categories.Add(category);
-                _dbContext.SaveChanges();
+                _adminService.CreateCategory(category);
                 return RedirectToAction("Categories");
             }
             return View(category);
@@ -187,7 +174,7 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/EditCategory/5
         public ActionResult EditCategory(int id)
         {
-            var category = _dbContext.Categories.Find(id);
+            var category = _adminService.GetCategoryById(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -202,8 +189,7 @@ namespace Vintagefur.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _dbContext.Entry(category).State = EntityState.Modified;
-                _dbContext.SaveChanges();
+                _adminService.UpdateCategory(category);
                 return RedirectToAction("Categories");
             }
             return View(category);
@@ -212,7 +198,7 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/DeleteCategory/5
         public ActionResult DeleteCategory(int id)
         {
-            var category = _dbContext.Categories.Find(id);
+            var category = _adminService.GetCategoryById(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -225,9 +211,7 @@ namespace Vintagefur.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteCategoryConfirmed(int id)
         {
-            var category = _dbContext.Categories.Find(id);
-            _dbContext.Categories.Remove(category);
-            _dbContext.SaveChanges();
+            _adminService.DeleteCategory(id);
             return RedirectToAction("Categories");
         }
 
@@ -238,21 +222,14 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/Orders
         public ActionResult Orders()
         {
-            var orders = _dbContext.Orders
-                .Include(o => o.Customer)
-                .OrderByDescending(o => o.OrderDate)
-                .ToList();
+            var orders = _adminService.GetAllOrders();
             return View(orders);
         }
 
         // GET: Admin/OrderDetails/5
         public ActionResult OrderDetails(int id)
         {
-            var order = _dbContext.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.OrderItems.Select(i => i.Product))
-                .FirstOrDefault(o => o.Id == id);
-
+            var order = _adminService.GetOrderById(id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -263,21 +240,21 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/EditOrder/5
         public ActionResult EditOrder(int id)
         {
-            var order = _dbContext.Orders.Find(id);
+            var order = _adminService.GetOrderById(id);
             if (order == null)
             {
                 return HttpNotFound();
             }
 
-            ViewBag.Statuses = Enum.GetValues(typeof(OrderStatus))
-                .Cast<OrderStatus>()
-                .Select(v => new SelectListItem
+            ViewBag.Statuses = new SelectList(
+                new List<SelectListItem>
                 {
-                    Text = v.ToString(),
-                    Value = ((int)v).ToString(),
-                    Selected = (v == order.Status)
-                })
-                .ToList();
+                    new SelectListItem { Text = "Ожидает оплаты", Value = OrderStatus.Pending.ToString() },
+                    new SelectListItem { Text = "Обработан", Value = OrderStatus.Processing.ToString() },
+                    new SelectListItem { Text = "Отправлен", Value = OrderStatus.Shipped.ToString() },
+                    new SelectListItem { Text = "Доставлен", Value = OrderStatus.Delivered.ToString() },
+                    new SelectListItem { Text = "Отменён", Value = OrderStatus.Cancelled.ToString() }
+                }, "Value", "Text", order.Status.ToString());
 
             return View(order);
         }
@@ -289,29 +266,41 @@ namespace Vintagefur.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var existingOrder = _dbContext.Orders.Find(order.Id);
-                if (existingOrder != null)
-                {
-                    existingOrder.Status = order.Status;
-                    existingOrder.ShippingDate = order.ShippingDate;
-                    existingOrder.DeliveryDate = order.DeliveryDate;
-                    existingOrder.Notes = order.Notes;
-                    _dbContext.SaveChanges();
-                }
+                _adminService.UpdateOrder(order);
                 return RedirectToAction("Orders");
             }
-
-            ViewBag.Statuses = Enum.GetValues(typeof(OrderStatus))
-                .Cast<OrderStatus>()
-                .Select(v => new SelectListItem
+            
+            ViewBag.Statuses = new SelectList(
+                new List<SelectListItem>
                 {
-                    Text = v.ToString(),
-                    Value = ((int)v).ToString(),
-                    Selected = (v == order.Status)
-                })
-                .ToList();
-
+                    new SelectListItem { Text = "Ожидает оплаты", Value = OrderStatus.Pending.ToString() },
+                    new SelectListItem { Text = "Обработан", Value = OrderStatus.Processing.ToString() },
+                    new SelectListItem { Text = "Отправлен", Value = OrderStatus.Shipped.ToString() },
+                    new SelectListItem { Text = "Доставлен", Value = OrderStatus.Delivered.ToString() },
+                    new SelectListItem { Text = "Отменён", Value = OrderStatus.Cancelled.ToString() }
+                }, "Value", "Text", order.Status.ToString());
+                
             return View(order);
+        }
+
+        // GET: Admin/DeleteOrder/5
+        public ActionResult DeleteOrder(int id)
+        {
+            var order = _adminService.GetOrderById(id);
+            if (order == null)
+            {
+                return HttpNotFound();
+            }
+            return View(order);
+        }
+
+        // POST: Admin/DeleteOrder/5
+        [HttpPost, ActionName("DeleteOrder")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteOrderConfirmed(int id)
+        {
+            _adminService.DeleteOrder(id);
+            return RedirectToAction("Orders");
         }
 
         #endregion
@@ -321,26 +310,26 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/Customers
         public ActionResult Customers()
         {
-            var customers = _dbContext.Customers.ToList();
+            var customers = _adminService.GetAllCustomers();
             return View(customers);
         }
 
         // GET: Admin/CustomerDetails/5
         public ActionResult CustomerDetails(int id)
         {
-            var customer = _dbContext.Customers.Find(id);
+            var customer = _adminService.GetCustomerById(id);
             if (customer == null)
             {
                 return HttpNotFound();
             }
-
-            var orders = _dbContext.Orders
-                .Include(o => o.OrderItems)
+            
+            var customerOrders = _dbContext.Orders
                 .Where(o => o.CustomerId == id)
                 .OrderByDescending(o => o.OrderDate)
                 .ToList();
-
-            ViewBag.Orders = orders;
+                
+            ViewBag.Orders = customerOrders;
+            
             return View(customer);
         }
 

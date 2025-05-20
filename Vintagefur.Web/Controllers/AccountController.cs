@@ -2,14 +2,14 @@ using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using Vintagefur.Application.Services;
+using Vintagefur.BusinessLogic.Services;
 using Vintagefur.Domain.Models;
 
 namespace Vintagefur.Web.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly AuthService _authService = new AuthService();
+        private readonly AuthServiceBusinessLogic _authServiceBusinessLogic = new AuthServiceBusinessLogic();
 
         public ActionResult Login()
         {
@@ -30,7 +30,7 @@ namespace Vintagefur.Web.Controllers
                 return View();
             }
 
-            var user = _authService.AuthenticateUser(email, password);
+            var user = _authServiceBusinessLogic.AuthenticateUser(email, password);
             if (user != null)
             {
                 System.Diagnostics.Debug.WriteLine($"Успешная аутентификация: {email}");
@@ -84,7 +84,7 @@ namespace Vintagefur.Web.Controllers
                 return View();
             }
 
-            var user = _authService.CreateAccount(firstName, lastName, email, password);
+            var user = _authServiceBusinessLogic.CreateAccount(firstName, lastName, email, password);
             if (user != null)
             {
                 AuthenticateUser(user);
@@ -121,7 +121,7 @@ namespace Vintagefur.Web.Controllers
             }
             else if (user.RoleId.HasValue)
             {
-                var role = new AuthService().GetRoleById(user.RoleId.Value);
+                var role = new AuthServiceBusinessLogic().GetRoleById(user.RoleId.Value);
                 if (role != null)
                 {
                     roleName = role.Name;
