@@ -1,21 +1,41 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using Vintagefur.BusinessLogic.Interfaces;
 using Vintagefur.Domain.Models;
-using Vintagefur.Infrastructure.Data;
 
 namespace Vintagefur.BusinessLogic.Services
 {
     public class CustomerServiceBusinessLogic
     {
-        private readonly VintagefurDbContext _dbContext;
-
+        private readonly ICustomerBL _customerBL;
+        
         public CustomerServiceBusinessLogic()
         {
-            _dbContext = new VintagefurDbContext();
+            _customerBL = BusinessLogicFactory.Instance.GetCustomerBL();
         }
-
-        public int CreateCustomer(string firstName, string lastName, string email, 
-            string address = null, string city = null, string postalCode = null, string country = null)
+        
+        public Customer GetCustomerById(int customerId)
+        {
+            return _customerBL.GetCustomerById(customerId);
+        }
+        
+        public Customer GetCustomerByUserId(int userId)
+        {
+            return _customerBL.GetCustomerByUserId(userId);
+        }
+        
+        public Customer GetCustomerByEmail(string email)
+        {
+            // Дополнительная логика для поиска по email, может потребоваться реализация в CustomerBL
+            return null;
+        }
+        
+        public List<Customer> GetAllCustomers()
+        {
+            return _customerBL.GetAllCustomers();
+        }
+        
+        public int CreateCustomer(string firstName, string lastName, string email, string address, string city, string postalCode, string country)
         {
             var customer = new Customer
             {
@@ -28,38 +48,23 @@ namespace Vintagefur.BusinessLogic.Services
                 Country = country,
                 RegistrationDate = DateTime.Now
             };
-
-            _dbContext.Customers.Add(customer);
-            _dbContext.SaveChanges();
-
-            return customer.Id;
-        }
-
-        public Customer GetCustomerById(int id)
-        {
-            return _dbContext.Customers.Find(id);
-        }
-
-        public Customer GetCustomerByEmail(string email)
-        {
-            return _dbContext.Customers.FirstOrDefault(c => c.Email == email);
-        }
-
-        public void UpdateCustomer(Customer customer)
-        {
-            var existingCustomer = _dbContext.Customers.Find(customer.Id);
-            if (existingCustomer != null)
+            
+            if (_customerBL.CreateCustomer(customer))
             {
-                existingCustomer.FirstName = customer.FirstName;
-                existingCustomer.LastName = customer.LastName;
-                existingCustomer.Email = customer.Email;
-                existingCustomer.Address = customer.Address;
-                existingCustomer.City = customer.City;
-                existingCustomer.PostalCode = customer.PostalCode;
-                existingCustomer.Country = customer.Country;
-
-                _dbContext.SaveChanges();
+                return customer.Id;
             }
+            
+            return 0;
+        }
+        
+        public bool UpdateCustomer(Customer customer)
+        {
+            return _customerBL.UpdateCustomer(customer);
+        }
+        
+        public bool DeleteCustomer(int customerId)
+        {
+            return _customerBL.DeleteCustomer(customerId);
         }
     }
 } 

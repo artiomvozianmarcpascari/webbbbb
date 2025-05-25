@@ -31,5 +31,13 @@ namespace Vintagefur.Domain.Models
 
         public int? RoleId { get; set; }
         public virtual Role Role { get; set; }
+        
+        public Guid? ExternalId { get; set; }
+        
+        [StringLength(20)]
+        public string Phone { get; set; }
+        
+        [StringLength(500)]
+        public string Address { get; set; }
     }
 } 

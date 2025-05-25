@@ -8,169 +8,128 @@ using Vintagefur.Infrastructure.Data;
 
 namespace Vintagefur.BusinessLogic.Services
 {
-    public class AdminServiceBusinessLogic : IAdminService
+    public class AdminServiceBusinessLogic
     {
-        private readonly VintagefurDbContext _dbContext;
-
+        private readonly IAdminService _adminService;
+        
         public AdminServiceBusinessLogic()
         {
-            _dbContext = new VintagefurDbContext();
+            _adminService = BusinessLogicFactory.Instance.GetAdminBL();
         }
-
-        #region Dashboard
-
+        
+        // Dashboard
         public int GetProductCount()
         {
-            return _dbContext.Products.Count();
+            return _adminService.GetProductCount();
         }
-
+        
         public int GetCategoryCount()
         {
-            return _dbContext.Categories.Count();
+            return _adminService.GetCategoryCount();
         }
-
+        
         public int GetOrderCount()
         {
-            return _dbContext.Orders.Count();
+            return _adminService.GetOrderCount();
         }
-
+        
         public int GetCustomerCount()
         {
-            return _dbContext.Customers.Count();
+            return _adminService.GetCustomerCount();
         }
-
+        
         public int GetPendingOrdersCount()
         {
-            return _dbContext.Orders.Count(o => o.Status == OrderStatus.Pending);
+            return _adminService.GetPendingOrdersCount();
         }
-
-        #endregion
-
-        #region Products
-
+        
+        // Products
         public List<Product> GetAllProducts()
         {
-            return _dbContext.Products
-                .Include(p => p.Category)
-                .Include(p => p.Material)
-                .Include(p => p.Style)
-                .ToList();
+            return _adminService.GetAllProducts();
         }
-
+        
         public Product GetProductById(int id)
         {
-            return _dbContext.Products.Find(id);
+            return _adminService.GetProductById(id);
         }
-
-        public void CreateProduct(Product product)
+        
+        public bool CreateProduct(Product product)
         {
-            product.CreatedDate = DateTime.Now;
-            _dbContext.Products.Add(product);
-            _dbContext.SaveChanges();
+            return _adminService.CreateProduct(product);
         }
-
-        public void UpdateProduct(Product product)
+        
+        public bool UpdateProduct(Product product)
         {
-            _dbContext.Entry(product).State = EntityState.Modified;
-            _dbContext.SaveChanges();
+            return _adminService.UpdateProduct(product);
         }
-
-        public void DeleteProduct(int id)
+        
+        public bool DeleteProduct(int id)
         {
-            var product = _dbContext.Products.Find(id);
-            if (product != null)
-            {
-                _dbContext.Products.Remove(product);
-                _dbContext.SaveChanges();
-            }
+            return _adminService.DeleteProduct(id);
         }
-
-        #endregion
-
-        #region Categories
-
+        
+        // Categories
         public List<Category> GetAllCategories()
         {
-            return _dbContext.Categories.ToList();
+            return _adminService.GetAllCategories();
         }
-
+        
         public Category GetCategoryById(int id)
         {
-            return _dbContext.Categories.Find(id);
+            return _adminService.GetCategoryById(id);
         }
-
-        public void CreateCategory(Category category)
+        
+        public bool CreateCategory(Category category)
         {
-            _dbContext.Categories.Add(category);
-            _dbContext.SaveChanges();
+            return _adminService.CreateCategory(category);
         }
-
-        public void UpdateCategory(Category category)
+        
+        public bool UpdateCategory(Category category)
         {
-            _dbContext.Entry(category).State = EntityState.Modified;
-            _dbContext.SaveChanges();
+            return _adminService.UpdateCategory(category);
         }
-
-        public void DeleteCategory(int id)
+        
+        public bool DeleteCategory(int id)
         {
-            var category = _dbContext.Categories.Find(id);
-            if (category != null)
-            {
-                _dbContext.Categories.Remove(category);
-                _dbContext.SaveChanges();
-            }
+            return _adminService.DeleteCategory(id);
         }
-
-        #endregion
-
-        #region Orders
-
+        
+        // Orders
         public List<Order> GetAllOrders()
         {
-            return _dbContext.Orders
-                .Include(o => o.Customer)
-                .OrderByDescending(o => o.OrderDate)
-                .ToList();
+            return _adminService.GetAllOrders();
         }
-
+        
         public Order GetOrderById(int id)
         {
-            return _dbContext.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.OrderItems.Select(oi => oi.Product))
-                .FirstOrDefault(o => o.Id == id);
+            return _adminService.GetOrderById(id);
         }
-
+        
         public void UpdateOrder(Order order)
         {
-            _dbContext.Entry(order).State = EntityState.Modified;
-            _dbContext.SaveChanges();
+            _adminService.UpdateOrder(order);
         }
-
+        
         public void DeleteOrder(int id)
         {
-            var order = _dbContext.Orders.Find(id);
-            if (order != null)
-            {
-                _dbContext.Orders.Remove(order);
-                _dbContext.SaveChanges();
-            }
+            _adminService.DeleteOrder(id);
         }
-
-        #endregion
-
-        #region Customers
-
+        
+        // Customers
         public List<Customer> GetAllCustomers()
         {
-            return _dbContext.Customers.ToList();
+            return _adminService.GetAllCustomers();
         }
-
+        
         public Customer GetCustomerById(int id)
         {
-            return _dbContext.Customers.Find(id);
+            return _adminService.GetCustomerById(id);
         }
-
-        #endregion
+        
+        public bool DeleteOrderItem(int orderItemId)
+        {
+            return _adminService.DeleteOrderItem(orderItemId);
+        }
     }
 } 

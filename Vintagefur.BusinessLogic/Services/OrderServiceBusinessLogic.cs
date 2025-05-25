@@ -4,47 +4,78 @@ using System.Linq;
 using System.Data.Entity;
 using Vintagefur.Domain.Models;
 using Vintagefur.Infrastructure.Data;
+using Vintagefur.BusinessLogic.Interfaces;
 
 namespace Vintagefur.BusinessLogic.Services
 {
     public class OrderServiceBusinessLogic
     {
         private readonly VintagefurDbContext _dbContext;
+        private readonly IOrderBL _orderBL;
 
         public OrderServiceBusinessLogic()
         {
             _dbContext = new VintagefurDbContext();
+            _orderBL = BusinessLogicFactory.Instance.GetOrderBL();
         }
 
-        public int CreateOrder(Customer customer, List<OrderItem> orderItems, string shippingAddress, 
-            string shippingCity, string shippingPostalCode, string shippingCountry, string notes = null)
+        public int CreateOrder(Customer customer, List<OrderItem> items, string shippingAddress, string shippingCity, string shippingPostalCode, string shippingCountry, string notes = null)
         {
             var order = new Order
             {
                 CustomerId = customer.Id,
                 OrderDate = DateTime.Now,
                 Status = OrderStatus.Pending,
-                TotalAmount = orderItems.Sum(i => i.UnitPrice * i.Quantity),
+                TotalAmount = CalculateTotal(items),
                 ShippingAddress = shippingAddress,
                 ShippingCity = shippingCity,
                 ShippingPostalCode = shippingPostalCode,
                 ShippingCountry = shippingCountry,
                 Notes = notes,
-                OrderItems = orderItems
+                OrderItems = items
             };
-
-            _dbContext.Orders.Add(order);
-            _dbContext.SaveChanges();
-
-            return order.Id;
+            
+            if (_orderBL.CreateOrder(order))
+            {
+                return order.Id;
+            }
+            
+            return 0;
         }
 
         public Order GetOrderById(int orderId)
         {
-            return _dbContext.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.OrderItems.Select(i => i.Product))
-                .FirstOrDefault(o => o.Id == orderId);
+            return _orderBL.GetOrderById(orderId);
+        }
+
+        public List<Order> GetAllOrders()
+        {
+            return _orderBL.GetAllOrders();
+        }
+
+        public List<Order> GetOrdersByUserId(int userId)
+        {
+            return _orderBL.GetOrdersByUserId(userId);
+        }
+
+        public bool UpdateOrder(Order order)
+        {
+            return _orderBL.UpdateOrder(order);
+        }
+
+        public bool DeleteOrder(int orderId)
+        {
+            return _orderBL.DeleteOrder(orderId);
+        }
+
+        private decimal CalculateTotal(List<OrderItem> items)
+        {
+            decimal total = 0;
+            foreach (var item in items)
+            {
+                total += item.UnitPrice * item.Quantity;
+            }
+            return total;
         }
 
         public List<Order> GetCustomerOrders(int customerId)

@@ -15,7 +15,7 @@ namespace Vintagefur.Web.Controllers
     public class AdminController : Controller
     {
         private readonly ProductServiceBusinessLogic _productServiceBusinessLogic;
-        private readonly IAdminService _adminService;
+        private readonly AdminServiceBusinessLogic _adminService;
         private readonly VintagefurDbContext _dbContext;
 
         public AdminController()

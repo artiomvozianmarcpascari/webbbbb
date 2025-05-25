@@ -1,9 +1,8 @@
 using System;
 using System.Web.Mvc;
+using Vintagefur.BusinessLogic;
 using Vintagefur.BusinessLogic.Interfaces;
-using Vintagefur.BusinessLogic.Services;
-using Vintagefur.Domain.Models;
-using Vintagefur.Web.Models;
+using Vintagefur.Domain.DTO;
 using Vintagefur.Web.Models.ViewModels;
 
 namespace Vintagefur.Web.Controllers
@@ -11,18 +10,19 @@ namespace Vintagefur.Web.Controllers
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
-        private readonly ProductServiceBusinessLogic _productServiceBusinessLogic;
+        private readonly IProduct _productService;
 
         public CartController()
         {
-            _cartService = new CartServiceBusinessLogic();
-            _productServiceBusinessLogic = new ProductServiceBusinessLogic();
+            var factory = BusinessLogicFactory.Instance;
+            _cartService = factory.GetCartBL();
+            _productService = factory.GetProductBL();
         }
 
         // GET: Cart
         public ActionResult Index()
         {
-            var cart = _cartService.GetCart(HttpContext);
+            var cart = _cartService.GetCart(System.Web.HttpContext.Current);
             var viewModel = new CartViewModel(cart);
             return View(viewModel);
         }
@@ -31,15 +31,49 @@ namespace Vintagefur.Web.Controllers
         [HttpPost]
         public ActionResult AddToCart(int id, int quantity = 1)
         {
-            var product = _productServiceBusinessLogic.GetProductById(id);
+            var product = _productService.GetProductById(id);
             if (product == null)
             {
                 return HttpNotFound();
             }
 
-            _cartService.AddItemToCart(HttpContext, id, quantity);
+            var cartAction = new CartActionDto
+            {
+                ProductId = id,
+                Quantity = quantity,
+                Action = "Add"
+            };
+            
+            // Получаем текущего пользователя, если он авторизован
+            if (User.Identity.IsAuthenticated)
+            {
+                // Предполагаем, что имя пользователя - это его email
+                var email = User.Identity.Name;
+                var userBL = BusinessLogicFactory.Instance.GetUserBL();
+                var user = userBL.GetUserByEmail(email);
+                if (user != null)
+                {
+                    cartAction.UserId = user.Id;
+                }
+            }
+            
+            // Получаем текущий CartId из сессии или куки
+            if (Session["CartId"] != null)
+            {
+                cartAction.CartId = (Guid)Session["CartId"];
+            }
+            
+            var result = _cartService.ProcessCartAction(cartAction);
+            if (result.IsSuccess)
+            {
+                // Сохраняем CartId в сессии, если его не было
+                if (Session["CartId"] == null)
+                {
+                    Session["CartId"] = result.CartId;
+                }
+            }
 
-            // After adding to cart, redirect back to the product page
+            // После добавления в корзину, перенаправляем обратно на страницу товара
             if (Request.UrlReferrer != null)
             {
                 return Redirect(Request.UrlReferrer.ToString());
@@ -52,7 +86,18 @@ namespace Vintagefur.Web.Controllers
         [HttpPost]
         public ActionResult RemoveFromCart(int id)
         {
-            _cartService.RemoveItemFromCart(HttpContext, id);
+            var cartAction = new CartActionDto
+            {
+                ProductId = id,
+                Action = "Remove"
+            };
+            
+            if (Session["CartId"] != null)
+            {
+                cartAction.CartId = (Guid)Session["CartId"];
+            }
+            
+            _cartService.ProcessCartAction(cartAction);
             return RedirectToAction("Index");
         }
 
@@ -60,7 +105,19 @@ namespace Vintagefur.Web.Controllers
         [HttpPost]
         public ActionResult UpdateQuantity(int id, int quantity)
         {
-            _cartService.UpdateCartItemQuantity(HttpContext, id, quantity);
+            var cartAction = new CartActionDto
+            {
+                ProductId = id,
+                Quantity = quantity,
+                Action = "Update"
+            };
+            
+            if (Session["CartId"] != null)
+            {
+                cartAction.CartId = (Guid)Session["CartId"];
+            }
+            
+            _cartService.ProcessCartAction(cartAction);
             return RedirectToAction("Index");
         }
 
@@ -68,7 +125,17 @@ namespace Vintagefur.Web.Controllers
         [HttpPost]
         public ActionResult ClearCart()
         {
-            _cartService.ClearCart(HttpContext);
+            var cartAction = new CartActionDto
+            {
+                Action = "Clear"
+            };
+            
+            if (Session["CartId"] != null)
+            {
+                cartAction.CartId = (Guid)Session["CartId"];
+            }
+            
+            _cartService.ProcessCartAction(cartAction);
             return RedirectToAction("Index");
         }
 
@@ -76,9 +143,15 @@ namespace Vintagefur.Web.Controllers
         [ChildActionOnly]
         public ActionResult CartSummary()
         {
-            var cart = _cartService.GetCart(HttpContext);
-            var viewModel = new CartViewModel(cart);
-            ViewBag.CartCount = viewModel.TotalQuantity;
+            var cartId = Session["CartId"] as Guid?;
+            var cartAction = new CartActionDto
+            {
+                Action = "Get",
+                CartId = cartId
+            };
+            
+            var cart = _cartService.ProcessCartAction(cartAction);
+            ViewBag.CartCount = cart.TotalItems;
             return PartialView("_CartSummary");
         }
     }

@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Web;
 using System.Web.Mvc;
+using Vintagefur.BusinessLogic;
 using Vintagefur.BusinessLogic.Interfaces;
-using Vintagefur.BusinessLogic.Services;
 using Vintagefur.Domain.Models;
 using Vintagefur.Web.Models;
 using Vintagefur.Web.Models.ViewModels;
@@ -12,31 +11,28 @@ namespace Vintagefur.Web.Controllers
 {
     public class CheckoutController : Controller
     {
-        private readonly CustomerServiceBusinessLogic _customerServiceBusinessLogic;
-        private readonly OrderServiceBusinessLogic _orderServiceBusinessLogic;
-        private readonly ProductServiceBusinessLogic _productServiceBusinessLogic;
         private readonly ICartService _cartService;
+        private readonly IOrderBL _orderService;
+        private readonly ICustomerBL _customerService;
 
         public CheckoutController()
         {
-            _customerServiceBusinessLogic = new CustomerServiceBusinessLogic();
-            _orderServiceBusinessLogic = new OrderServiceBusinessLogic();
-            _productServiceBusinessLogic = new ProductServiceBusinessLogic();
-            _cartService = new CartServiceBusinessLogic();
+            var factory = BusinessLogicFactory.Instance;
+            _cartService = factory.GetCartBL();
+            _orderService = factory.GetOrderBL();
+            _customerService = factory.GetCustomerBL();
         }
 
         // GET: Checkout
         public ActionResult Index()
         {
-            var cart = _cartService.GetCart(HttpContext);
-            var viewModel = new CartViewModel(cart);
-            if (viewModel.CartItems.Count == 0)
+            var cart = _cartService.GetCart(System.Web.HttpContext.Current);
+            if (cart.TotalQuantity <= 0)
             {
                 return RedirectToAction("Index", "Cart");
             }
 
-            var customer = new Customer();
-            return View(customer);
+            return View();
         }
 
         // POST: Checkout/PlaceOrder
@@ -44,94 +40,46 @@ namespace Vintagefur.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult PlaceOrder(Customer customer)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View("Index", customer);
-            }
-
-            var cart = _cartService.GetCart(HttpContext);
-            var viewModel = new CartViewModel(cart);
-            if (viewModel.CartItems.Count == 0)
-            {
-                ModelState.AddModelError("", "Ваша корзина пуста");
-                return View("Index", customer);
-            }
-
-            // Поиск существующего клиента по email или создание нового
-            var existingCustomer = _customerServiceBusinessLogic.GetCustomerByEmail(customer.Email);
-            int customerId;
-
-            if (existingCustomer != null)
-            {
-                customerId = existingCustomer.Id;
-                
-                // Обновим данные клиента, если изменились
-                customer.Id = customerId;
-                _customerServiceBusinessLogic.UpdateCustomer(customer);
-            }
-            else
-            {
-                // Создаем нового клиента
-                customerId = _customerServiceBusinessLogic.CreateCustomer(
-                    customer.FirstName,
-                    customer.LastName,
-                    customer.Email,
-                    customer.Address,
-                    customer.City,
-                    customer.PostalCode,
-                    customer.Country
-                );
-                customer.Id = customerId;
-            }
-
-            // Создаем элементы заказа из корзины
-            var orderItems = new List<OrderItem>();
-            foreach (var item in viewModel.CartItems)
-            {
-                var product = _productServiceBusinessLogic.GetProductById(item.ProductId);
-                if (product != null)
+                var cart = _cartService.GetCart(System.Web.HttpContext.Current);
+                if (cart.TotalQuantity <= 0)
                 {
-                    orderItems.Add(new OrderItem
-                    {
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        UnitPrice = item.UnitPrice
-                    });
+                    return RedirectToAction("Index", "Cart");
+                }
+
+                // Сохраняем информацию о клиенте
+                _customerService.CreateCustomer(customer);
+
+                // Создаем заказ
+                var order = new Order
+                {
+                    CustomerId = customer.Id,
+                    OrderDate = DateTime.Now,
+                    TotalAmount = cart.TotalAmount,
+                    Status = OrderStatus.Pending
+                };
+
+                if (_orderService.CreateOrder(order))
+                {
+                    // После успешного создания заказа очищаем корзину
+                    _cartService.ClearCart(System.Web.HttpContext.Current);
+                    return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
                 }
             }
 
-            if (orderItems.Count > 0)
-            {
-                // Создаем заказ
-                int orderId = _orderServiceBusinessLogic.CreateOrder(
-                    customer,
-                    orderItems,
-                    customer.Address,
-                    customer.City,
-                    customer.PostalCode,
-                    customer.Country,
-                    Request.Form["Notes"]
-                );
-
-                // Очищаем корзину после оформления заказа
-                _cartService.ClearCart(HttpContext);
-
-                // Перенаправление на страницу подтверждения заказа
-                return RedirectToAction("OrderConfirmation", new { id = orderId });
-            }
-
-            ModelState.AddModelError("", "Произошла ошибка при оформлении заказа");
             return View("Index", customer);
         }
 
         // GET: Checkout/OrderConfirmation/5
-        public ActionResult OrderConfirmation(int id)
+        public ActionResult OrderConfirmation(int orderId)
         {
-            var order = _orderServiceBusinessLogic.GetOrderById(id);
+            var order = _orderService.GetOrderById(orderId);
             if (order == null)
             {
                 return HttpNotFound();
             }
+
             return View(order);
         }
     }

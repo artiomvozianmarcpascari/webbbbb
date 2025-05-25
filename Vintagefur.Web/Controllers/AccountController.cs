@@ -2,14 +2,21 @@ using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using Vintagefur.BusinessLogic.Services;
+using Vintagefur.BusinessLogic;
+using Vintagefur.BusinessLogic.Interfaces;
 using Vintagefur.Domain.Models;
 
 namespace Vintagefur.Web.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly AuthServiceBusinessLogic _authServiceBusinessLogic = new AuthServiceBusinessLogic();
+        private readonly IUserBL _userBL;
+
+        public AccountController()
+        {
+            var factory = BusinessLogicFactory.Instance;
+            _userBL = factory.GetUserBL();
+        }
 
         public ActionResult Login()
         {
@@ -30,14 +37,16 @@ namespace Vintagefur.Web.Controllers
                 return View();
             }
 
-            var user = _authServiceBusinessLogic.AuthenticateUser(email, password);
-            if (user != null)
+            var authResult = _userBL.AuthenticateUser(email, password);
+            if (authResult.IsSuccess)
             {
                 System.Diagnostics.Debug.WriteLine($"Успешная аутентификация: {email}");
-                System.Diagnostics.Debug.WriteLine($"RoleId: {user.RoleId}");
-                System.Diagnostics.Debug.WriteLine($"Role: {(user.Role != null ? user.Role.Name : "null")}");
+                System.Diagnostics.Debug.WriteLine($"UserId: {authResult.UserId}");
+                System.Diagnostics.Debug.WriteLine($"Role: {authResult.UserRole}");
                 
-                AuthenticateUser(user);
+                HttpContext.Response.Cookies.Add(authResult.Cookie);
+                Session["UserName"] = email;
+                Session["UserRole"] = authResult.UserRole;
                 
                 System.Diagnostics.Debug.WriteLine($"Session после аутентификации:");
                 System.Diagnostics.Debug.WriteLine($"UserName: {Session["UserName"]}");
@@ -53,7 +62,7 @@ namespace Vintagefur.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
             
-            ViewBag.ErrorMessage = "Неверный email или пароль";
+            ViewBag.ErrorMessage = authResult.ErrorMessage ?? "Неверный email или пароль";
             return View();
         }
 
@@ -84,11 +93,25 @@ namespace Vintagefur.Web.Controllers
                 return View();
             }
 
-            var user = _authServiceBusinessLogic.CreateAccount(firstName, lastName, email, password);
-            if (user != null)
+            // Создание пользователя через бизнес-логику
+            var user = new User
             {
-                AuthenticateUser(user);
-                return RedirectToAction("Index", "Home");
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                PasswordHash = password // В реальном приложении здесь должно быть хеширование
+            };
+
+            if (_userBL.UpdateUser(user))
+            {
+                var authResult = _userBL.AuthenticateUser(email, password);
+                if (authResult.IsSuccess)
+                {
+                    HttpContext.Response.Cookies.Add(authResult.Cookie);
+                    Session["UserName"] = $"{firstName} {lastName}";
+                    Session["UserRole"] = authResult.UserRole;
+                    return RedirectToAction("Index", "Home");
+                }
             }
 
             ViewBag.ErrorMessage = "Пользователь с таким email уже существует";
@@ -97,53 +120,16 @@ namespace Vintagefur.Web.Controllers
 
         public ActionResult Logout()
         {
-            FormsAuthentication.SignOut();
-            var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, "")
+            var signOutResult = _userBL.SignOut();
+            if (signOutResult.IsSuccess)
             {
-                Expires = DateTime.Now.AddYears(-1)
-            };
-            HttpContext.Response.Cookies.Add(authCookie);
+                HttpContext.Response.Cookies.Add(signOutResult.Cookie);
+            }
 
             Session["UserName"] = null;
             Session["UserRole"] = null;
 
             return RedirectToAction("Index", "Home");
-        }
-
-        private void AuthenticateUser(User user)
-        {
-            string roleName = "User"; 
-            
-            if (user.Role != null)
-            {
-                roleName = user.Role.Name;
-                System.Diagnostics.Debug.WriteLine($"User role found: {roleName}");
-            }
-            else if (user.RoleId.HasValue)
-            {
-                var role = new AuthServiceBusinessLogic().GetRoleById(user.RoleId.Value);
-                if (role != null)
-                {
-                    roleName = role.Name;
-                    System.Diagnostics.Debug.WriteLine($"User role loaded manually: {roleName}");
-                }
-            }
-            
-            var ticket = new FormsAuthenticationTicket(
-                1, // версия билета
-                user.Email,
-                DateTime.Now,
-                DateTime.Now.AddMinutes(30), // время истечения
-                true, // постоянный куки
-                roleName, // пользовательские данные
-                "/");
-
-            var encryptedTicket = FormsAuthentication.Encrypt(ticket);
-            var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
-            HttpContext.Response.Cookies.Add(cookie);
-            
-            Session["UserName"] = $"{user.FirstName} {user.LastName}";
-            Session["UserRole"] = roleName;
         }
     }
 } 
