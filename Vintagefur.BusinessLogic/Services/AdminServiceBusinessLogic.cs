@@ -127,6 +127,25 @@ namespace Vintagefur.BusinessLogic.Services
             return _adminService.GetCustomerById(id);
         }
         
+        public List<Order> GetOrdersByCustomerId(int customerId)
+        {
+            return _adminService.GetAllOrders().Where(o => o.CustomerId == customerId).ToList();
+        }
+        
+        public List<Material> GetAllMaterials()
+        {
+            // Здесь должен быть метод для получения всех материалов
+            // Временная реализация
+            return new List<Material>();
+        }
+        
+        public List<ProductStyle> GetAllStyles()
+        {
+            // Здесь должен быть метод для получения всех стилей
+            // Временная реализация
+            return new List<ProductStyle>();
+        }
+        
         public bool DeleteOrderItem(int orderItemId)
         {
             return _adminService.DeleteOrderItem(orderItemId);

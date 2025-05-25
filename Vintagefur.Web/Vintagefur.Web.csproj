@@ -136,7 +136,6 @@
         <Compile Include="Models\CartItem.cs" />
         <Compile Include="Models\ShoppingCart.cs" />
         <Compile Include="Models\ViewModels\CartViewModel.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Content\css\.DS_Store" />
@@ -273,6 +272,7 @@
         <Folder Include="App_Data" />
         <Folder Include="images\styles\" />
         <Folder Include="Models\Account\" />
+        <Folder Include="Properties\" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="fonts\glyphicons-halflings-regular.woff2" />

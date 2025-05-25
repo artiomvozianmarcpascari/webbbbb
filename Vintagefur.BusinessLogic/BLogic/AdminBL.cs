@@ -151,5 +151,34 @@ namespace Vintagefur.BusinessLogic.BLogic
         {
             return _productRepository.GetById(id);
         }
+
+        public List<Order> GetOrdersByCustomerId(int customerId)
+        {
+            return _orderRepository.GetAll().Where(o => o.CustomerId == customerId).ToList();
+        }
+        
+        public List<Material> GetAllMaterials()
+        {
+            // Временная реализация
+            return new List<Material>();
+        }
+        
+        public Material GetMaterialById(int id)
+        {
+            // Временная реализация
+            return new Material { Id = id };
+        }
+        
+        public List<ProductStyle> GetAllStyles()
+        {
+            // Временная реализация
+            return new List<ProductStyle>();
+        }
+        
+        public ProductStyle GetStyleById(int id)
+        {
+            // Временная реализация
+            return new ProductStyle { Id = id };
+        }
     }
 } 

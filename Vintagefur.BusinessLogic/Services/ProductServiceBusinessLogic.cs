@@ -1,23 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
 using Vintagefur.BusinessLogic.Interfaces;
 using Vintagefur.Domain.DTO;
 using Vintagefur.Domain.Models;
-using Vintagefur.Infrastructure.Data;
 
 namespace Vintagefur.BusinessLogic.Services
 {
     public class ProductServiceBusinessLogic
     {
         private readonly IProduct _productBL;
-        private readonly VintagefurDbContext _dbContext;
 
         public ProductServiceBusinessLogic()
         {
             _productBL = BusinessLogicFactory.Instance.GetProductBL();
-            _dbContext = new VintagefurDbContext();
         }
 
         public List<Product> GetAllProducts()
@@ -58,7 +54,23 @@ namespace Vintagefur.BusinessLogic.Services
 
         public List<Category> GetAllCategories()
         {
-            return _dbContext.Categories.ToList();
+            // Здесь должен быть метод для получения всех категорий из IProduct или CategoryRepository
+            // Временная реализация
+            return new List<Category>();
+        }
+
+        public List<Material> GetAllMaterials()
+        {
+            // Здесь должен быть метод для получения всех материалов
+            // Временная реализация
+            return new List<Material>();
+        }
+        
+        public List<ProductStyle> GetAllStyles()
+        {
+            // Здесь должен быть метод для получения всех стилей
+            // Временная реализация
+            return new List<ProductStyle>();
         }
 
         public List<Product> SearchProducts(string searchTerm)

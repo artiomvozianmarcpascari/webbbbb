@@ -32,10 +32,19 @@ namespace Vintagefur.BusinessLogic.Interfaces
         Order GetOrderById(int id);
         void UpdateOrder(Order order);
         void DeleteOrder(int id);
+        List<Order> GetOrdersByCustomerId(int customerId);
 
         // Customers
         List<Customer> GetAllCustomers();
         Customer GetCustomerById(int id);
+
+        // Materials
+        List<Material> GetAllMaterials();
+        Material GetMaterialById(int id);
+
+        // Styles
+        List<ProductStyle> GetAllStyles();
+        ProductStyle GetStyleById(int id);
 
         bool DeleteOrderItem(int orderItemId);
     }

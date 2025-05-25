@@ -5,8 +5,6 @@ using Vintagefur.BusinessLogic.Interfaces;
 using Vintagefur.BusinessLogic.Services;
 using Vintagefur.Domain.Models;
 using System.Collections.Generic;
-using System.Data.Entity;
-using Vintagefur.Infrastructure.Data;
 using System.Diagnostics;
 
 namespace Vintagefur.Web.Controllers
@@ -16,13 +14,11 @@ namespace Vintagefur.Web.Controllers
     {
         private readonly ProductServiceBusinessLogic _productServiceBusinessLogic;
         private readonly AdminServiceBusinessLogic _adminService;
-        private readonly VintagefurDbContext _dbContext;
 
         public AdminController()
         {
             _productServiceBusinessLogic = new ProductServiceBusinessLogic();
             _adminService = new AdminServiceBusinessLogic();
-            _dbContext = new VintagefurDbContext();
             
             // Диагностика - безопасная
             Debug.WriteLine("AdminController создан");
@@ -66,9 +62,13 @@ namespace Vintagefur.Web.Controllers
         // GET: Admin/CreateProduct
         public ActionResult CreateProduct()
         {
-            ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name");
-            ViewBag.Materials = new SelectList(_dbContext.Materials, "Id", "Name");
-            ViewBag.Styles = new SelectList(_dbContext.ProductStyles, "Id", "Name");
+            var categories = _adminService.GetAllCategories();
+            var materials = _productServiceBusinessLogic.GetAllMaterials();
+            var styles = _productServiceBusinessLogic.GetAllStyles();
+            
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+            ViewBag.Materials = new SelectList(materials, "Id", "Name");
+            ViewBag.Styles = new SelectList(styles, "Id", "Name");
             return View();
         }
 
@@ -83,9 +83,13 @@ namespace Vintagefur.Web.Controllers
                 return RedirectToAction("Products");
             }
 
-            ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name", product.CategoryId);
-            ViewBag.Materials = new SelectList(_dbContext.Materials, "Id", "Name", product.MaterialId);
-            ViewBag.Styles = new SelectList(_dbContext.ProductStyles, "Id", "Name", product.StyleId);
+            var categories = _adminService.GetAllCategories();
+            var materials = _productServiceBusinessLogic.GetAllMaterials();
+            var styles = _productServiceBusinessLogic.GetAllStyles();
+            
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
+            ViewBag.Materials = new SelectList(materials, "Id", "Name", product.MaterialId);
+            ViewBag.Styles = new SelectList(styles, "Id", "Name", product.StyleId);
             return View(product);
         }
 
@@ -98,9 +102,13 @@ namespace Vintagefur.Web.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name", product.CategoryId);
-            ViewBag.Materials = new SelectList(_dbContext.Materials, "Id", "Name", product.MaterialId);
-            ViewBag.Styles = new SelectList(_dbContext.ProductStyles, "Id", "Name", product.StyleId);
+            var categories = _adminService.GetAllCategories();
+            var materials = _productServiceBusinessLogic.GetAllMaterials();
+            var styles = _productServiceBusinessLogic.GetAllStyles();
+            
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
+            ViewBag.Materials = new SelectList(materials, "Id", "Name", product.MaterialId);
+            ViewBag.Styles = new SelectList(styles, "Id", "Name", product.StyleId);
             return View(product);
         }
 
@@ -115,9 +123,13 @@ namespace Vintagefur.Web.Controllers
                 return RedirectToAction("Products");
             }
 
-            ViewBag.Categories = new SelectList(_dbContext.Categories, "Id", "Name", product.CategoryId);
-            ViewBag.Materials = new SelectList(_dbContext.Materials, "Id", "Name", product.MaterialId);
-            ViewBag.Styles = new SelectList(_dbContext.ProductStyles, "Id", "Name", product.StyleId);
+            var categories = _adminService.GetAllCategories();
+            var materials = _productServiceBusinessLogic.GetAllMaterials();
+            var styles = _productServiceBusinessLogic.GetAllStyles();
+            
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
+            ViewBag.Materials = new SelectList(materials, "Id", "Name", product.MaterialId);
+            ViewBag.Styles = new SelectList(styles, "Id", "Name", product.StyleId);
             return View(product);
         }
 
@@ -323,11 +335,7 @@ namespace Vintagefur.Web.Controllers
                 return HttpNotFound();
             }
             
-            var customerOrders = _dbContext.Orders
-                .Where(o => o.CustomerId == id)
-                .OrderByDescending(o => o.OrderDate)
-                .ToList();
-                
+            var customerOrders = _adminService.GetOrdersByCustomerId(id);
             ViewBag.Orders = customerOrders;
             
             return View(customer);
