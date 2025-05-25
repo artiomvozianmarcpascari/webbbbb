@@ -1,6 +1,4 @@
-using System;
 using Vintagefur.Domain.DTO;
-using Vintagefur.Domain.Models;
 
 namespace Vintagefur.BusinessLogic.Interfaces
 {

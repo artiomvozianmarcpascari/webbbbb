@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using System.Web;
 using Vintagefur.Domain.Models;
 using Vintagefur.Infrastructure.Data;

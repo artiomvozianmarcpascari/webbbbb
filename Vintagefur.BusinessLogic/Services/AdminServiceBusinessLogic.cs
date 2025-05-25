@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using Vintagefur.BusinessLogic.Interfaces;
 using Vintagefur.Domain.Models;
-using Vintagefur.Infrastructure.Data;
 
 namespace Vintagefur.BusinessLogic.Services
 {

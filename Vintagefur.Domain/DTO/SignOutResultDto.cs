@@ -1,4 +1,3 @@
-using System;
 using System.Web;
 
 namespace Vintagefur.Domain.DTO

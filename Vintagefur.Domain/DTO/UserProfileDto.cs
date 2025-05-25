@@ -1,5 +1,3 @@
-using System;
-
 namespace Vintagefur.Domain.DTO
 {
     public class UserProfileDto

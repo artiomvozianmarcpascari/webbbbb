@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Data.Entity;
 using Vintagefur.Domain.Models;
 using Vintagefur.Infrastructure.Data;
 using Vintagefur.BusinessLogic.Interfaces;

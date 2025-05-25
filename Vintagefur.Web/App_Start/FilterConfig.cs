@@ -1,7 +1,4 @@
-﻿using System.Web;
-using System.Web.Mvc;
-
-namespace Vintagefur.Web
+﻿namespace Vintagefur.Web
 {
     public class FilterConfig
     {

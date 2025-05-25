@@ -1,4 +1,3 @@
-using System;
 using Vintagefur.Domain.Models;
 
 namespace Vintagefur.Web.Models

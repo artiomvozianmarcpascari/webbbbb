@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Vintagefur.Domain.DTO;
 using Vintagefur.Domain.Models;

@@ -1,10 +1,10 @@
 using System;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Vintagefur.Domain.Models;
 using Vintagefur.Infrastructure.Data;
-using System.Data.Entity; // Корректное пространство имен для Include
+
+// Корректное пространство имен для Include
 
 namespace Vintagefur.BusinessLogic.Services
 {

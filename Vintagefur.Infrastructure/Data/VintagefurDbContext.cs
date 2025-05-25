@@ -1,4 +1,3 @@
-using System.Data.Entity;
 using Vintagefur.Domain.Models;
 
 namespace Vintagefur.Infrastructure.Data
