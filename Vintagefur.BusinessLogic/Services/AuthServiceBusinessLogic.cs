@@ -1,4 +1,6 @@
 using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Vintagefur.Domain.Models;

@@ -1,4 +1,6 @@
-﻿namespace Vintagefur.Web
+﻿using System.Web.Optimization;
+
+namespace Vintagefur.Web
 {
     public class BundleConfig
     {

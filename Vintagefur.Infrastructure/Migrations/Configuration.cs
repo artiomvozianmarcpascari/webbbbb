@@ -1,4 +1,6 @@
-﻿namespace Vintagefur.Infrastructure.Migrations
+﻿using System.Data.Entity.Migrations;
+
+namespace Vintagefur.Infrastructure.Migrations
 {
     internal sealed class Configuration : DbMigrationsConfiguration<Vintagefur.Infrastructure.Data.VintagefurDbContext>
     {

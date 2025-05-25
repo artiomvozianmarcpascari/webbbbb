@@ -1,4 +1,6 @@
-﻿namespace Vintagefur.Web.Controllers
+﻿using System.Web.Mvc;
+
+namespace Vintagefur.Web.Controllers
 {
     public class HomeController : Controller
     {
