@@ -1,14 +1,19 @@
+using System;
 using System.Web;
+using Vintagefur.Domain.DTO;
 using Vintagefur.Domain.Models;
 
 namespace Vintagefur.BusinessLogic.Interfaces
 {
     public interface ICartService
     {
-        Cart GetCart(HttpContextBase context);
-        void AddItemToCart(HttpContextBase context, int productId, int quantity = 1);
-        void RemoveItemFromCart(HttpContextBase context, int productId);
-        void UpdateCartItemQuantity(HttpContextBase context, int productId, int quantity);
-        void ClearCart(HttpContextBase context);
+        Cart GetCart(HttpContext httpContext);
+        void AddItemToCart(HttpContext httpContext, int productId, int quantity);
+        void RemoveItemFromCart(HttpContext httpContext, int productId);
+        void UpdateCartItemQuantity(HttpContext httpContext, int productId, int quantity);
+        void ClearCart(HttpContext httpContext);
+        
+        // Новый метод для работы с DTO
+        CartResultDto ProcessCartAction(CartActionDto actionDto);
     }
 } 

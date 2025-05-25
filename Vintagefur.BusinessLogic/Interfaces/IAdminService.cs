@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Vintagefur.Domain.Models;
 
@@ -15,16 +16,16 @@ namespace Vintagefur.BusinessLogic.Interfaces
         // Products
         List<Product> GetAllProducts();
         Product GetProductById(int id);
-        void CreateProduct(Product product);
-        void UpdateProduct(Product product);
-        void DeleteProduct(int id);
+        bool CreateProduct(Product product);
+        bool UpdateProduct(Product product);
+        bool DeleteProduct(int productId);
 
         // Categories
         List<Category> GetAllCategories();
-        Category GetCategoryById(int id);
-        void CreateCategory(Category category);
-        void UpdateCategory(Category category);
-        void DeleteCategory(int id);
+        Category GetCategoryById(int categoryId);
+        bool CreateCategory(Category category);
+        bool UpdateCategory(Category category);
+        bool DeleteCategory(int categoryId);
 
         // Orders
         List<Order> GetAllOrders();
@@ -35,5 +36,7 @@ namespace Vintagefur.BusinessLogic.Interfaces
         // Customers
         List<Customer> GetAllCustomers();
         Customer GetCustomerById(int id);
+
+        bool DeleteOrderItem(int orderItemId);
     }
 } 
