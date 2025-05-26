@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Vintagefur.Domain.Models;
 
 namespace Vintagefur.BusinessLogic.Core
@@ -38,6 +40,54 @@ namespace Vintagefur.BusinessLogic.Core
         {
             // Базовая реализация
             return true;
+        }
+        
+        public bool DeleteOrderItem(int orderItemId)
+        {
+            // Базовая реализация
+            return true;
+        }
+        
+        public List<Product> GetAllProducts()
+        {
+            // Базовая реализация
+            return new List<Product>();
+        }
+        
+        public Product GetProductById(int id)
+        {
+            // Базовая реализация
+            return new Product();
+        }
+        
+        public List<Order> GetOrdersByCustomerId(int customerId)
+        {
+            // Базовая реализация
+            return new List<Order>();
+        }
+        
+        public List<Material> GetAllMaterials()
+        {
+            // Базовая реализация
+            return new List<Material>();
+        }
+        
+        public Material GetMaterialById(int id)
+        {
+            // Базовая реализация
+            return new Material();
+        }
+        
+        public List<ProductStyle> GetAllStyles()
+        {
+            // Базовая реализация
+            return new List<ProductStyle>();
+        }
+        
+        public ProductStyle GetStyleById(int id)
+        {
+            // Базовая реализация
+            return new ProductStyle();
         }
     }
 } 

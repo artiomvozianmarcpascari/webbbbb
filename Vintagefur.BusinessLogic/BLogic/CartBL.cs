@@ -12,7 +12,7 @@ namespace Vintagefur.BusinessLogic.BLogic
         public Cart GetCart(HttpContext httpContext)
         {
             // Вызов метода базового класса
-            return GetCartAction(httpContext);
+            return base.GetCart(httpContext);
         }
 
         public void AddItemToCart(HttpContext httpContext, int productId, int quantity = 1)
@@ -21,14 +21,8 @@ namespace Vintagefur.BusinessLogic.BLogic
             if (productId <= 0 || quantity <= 0)
                 return;
 
-            // Получаем корзину через метод базового класса
-            var cart = GetCartAction(httpContext);
-            
-            // Вызов метода базового класса для добавления товара
-            AddItemToCartAction(httpContext, cart, productId, quantity);
-            
-            // Сохраняем корзину в сессию
-            SaveCartToSessionAction(httpContext, cart);
+            // Вызов метода базового класса
+            base.AddItemToCart(httpContext, productId, quantity);
         }
 
         public void RemoveItemFromCart(HttpContext httpContext, int productId)
@@ -37,14 +31,8 @@ namespace Vintagefur.BusinessLogic.BLogic
             if (productId <= 0)
                 return;
 
-            // Получаем корзину через метод базового класса
-            var cart = GetCartAction(httpContext);
-            
-            // Вызов метода базового класса для удаления товара
-            RemoveItemFromCartAction(httpContext, cart, productId);
-            
-            // Сохраняем корзину в сессию
-            SaveCartToSessionAction(httpContext, cart);
+            // Вызов метода базового класса
+            base.RemoveItemFromCart(httpContext, productId);
         }
 
         public void UpdateCartItemQuantity(HttpContext httpContext, int productId, int quantity)
@@ -53,104 +41,20 @@ namespace Vintagefur.BusinessLogic.BLogic
             if (productId <= 0 || quantity < 0)
                 return;
 
-            // Получаем корзину через метод базового класса
-            var cart = GetCartAction(httpContext);
-            
-            // Вызов метода базового класса для обновления количества
-            UpdateCartItemQuantityAction(httpContext, cart, productId, quantity);
-            
-            // Сохраняем корзину в сессию
-            SaveCartToSessionAction(httpContext, cart);
+            // Вызов метода базового класса
+            base.UpdateCartItemQuantity(httpContext, productId, quantity);
         }
 
         public void ClearCart(HttpContext httpContext)
         {
             // Вызов метода базового класса
-            ClearCartAction(httpContext);
+            base.ClearCart(httpContext);
         }
         
         public CartResultDto ProcessCartAction(CartActionDto actionDto)
         {
-            try
-            {
-                if (actionDto == null)
-                    return new CartResultDto { IsSuccess = false, ErrorMessage = "Недопустимые параметры запроса" };
-                
-                // Создаем результат по умолчанию
-                var result = new CartResultDto
-                {
-                    IsSuccess = true,
-                    CartId = actionDto.CartId ?? Guid.NewGuid(),
-                    Items = new System.Collections.Generic.List<CartItem>(),
-                    TotalPrice = 0,
-                    TotalItems = 0
-                };
-                
-                // Используем HttpContext.Current если он доступен
-                var httpContext = HttpContext.Current;
-                if (httpContext == null)
-                    return new CartResultDto { IsSuccess = false, ErrorMessage = "HttpContext недоступен" };
-                
-                // Получаем корзину
-                var cart = GetCartAction(httpContext);
-                
-                // Реализуем логику в зависимости от типа действия
-                switch (actionDto.Action?.ToLower())
-                {
-                    case "add":
-                        if (actionDto.ProductId <= 0 || actionDto.Quantity <= 0)
-                            return new CartResultDto { IsSuccess = false, ErrorMessage = "Недопустимые параметры товара" };
-                            
-                        AddItemToCartAction(httpContext, cart, actionDto.ProductId, actionDto.Quantity);
-                        break;
-                        
-                    case "remove":
-                        if (actionDto.ProductId <= 0)
-                            return new CartResultDto { IsSuccess = false, ErrorMessage = "Недопустимый ID товара" };
-                            
-                        RemoveItemFromCartAction(httpContext, cart, actionDto.ProductId);
-                        break;
-                        
-                    case "update":
-                        if (actionDto.ProductId <= 0 || actionDto.Quantity < 0)
-                            return new CartResultDto { IsSuccess = false, ErrorMessage = "Недопустимые параметры для обновления" };
-                            
-                        UpdateCartItemQuantityAction(httpContext, cart, actionDto.ProductId, actionDto.Quantity);
-                        break;
-                        
-                    case "clear":
-                        ClearCartAction(httpContext);
-                        break;
-                        
-                    case "get":
-                        // Просто получаем текущую корзину
-                        break;
-                        
-                    default:
-                        return new CartResultDto { IsSuccess = false, ErrorMessage = "Неизвестное действие" };
-                }
-                
-                // Сохраняем корзину в сессию
-                SaveCartToSessionAction(httpContext, cart);
-                
-                // Преобразуем корзину в результат
-                foreach (var item in cart.Items)
-                {
-                    result.Items.Add(item);
-                    result.TotalPrice += item.TotalPrice;
-                    result.TotalItems += item.Quantity;
-                }
-                
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return new CartResultDto
-                {
-                    IsSuccess = false,
-                    ErrorMessage = ex.Message
-                };
-            }
+            // Вызов метода базового класса
+            return base.ProcessCartAction(actionDto);
         }
         
         // Вспомогательный метод для преобразования Cart в CartDTO (если потребуется)
@@ -178,38 +82,6 @@ namespace Vintagefur.BusinessLogic.BLogic
             cartDTO.TotalQuantity = cart.TotalQuantity;
             
             return cartDTO;
-        }
-        
-        // Добавляем методы для работы с HttpContext вместо HttpContextBase
-        private Cart GetCartAction(HttpContext httpContext)
-        {
-            // Реализация для HttpContext
-            return new Cart();
-        }
-        
-        private void AddItemToCartAction(HttpContext httpContext, Cart cart, int productId, int quantity)
-        {
-            // Реализация для HttpContext
-        }
-        
-        private void RemoveItemFromCartAction(HttpContext httpContext, Cart cart, int productId)
-        {
-            // Реализация для HttpContext
-        }
-        
-        private void UpdateCartItemQuantityAction(HttpContext httpContext, Cart cart, int productId, int quantity)
-        {
-            // Реализация для HttpContext
-        }
-        
-        private void ClearCartAction(HttpContext httpContext)
-        {
-            // Реализация для HttpContext
-        }
-        
-        private void SaveCartToSessionAction(HttpContext httpContext, Cart cart)
-        {
-            // Реализация для HttpContext
         }
     }
 } 

@@ -139,47 +139,50 @@ namespace Vintagefur.BusinessLogic.BLogic
         
         public bool DeleteOrderItem(int orderItemId)
         {
-            // Здесь должна быть логика удаления элемента заказа
-            return true;
+            // Вызов метода базового класса
+            return base.DeleteOrderItem(orderItemId);
         }
         
         public List<Product> GetAllProducts()
         {
-            return _productRepository.GetAll();
+            // Вызов метода базового класса
+            return base.GetAllProducts();
         }
         
         public Product GetProductById(int id)
         {
-            return _productRepository.GetById(id);
+            // Вызов метода базового класса
+            return base.GetProductById(id);
         }
 
         public List<Order> GetOrdersByCustomerId(int customerId)
         {
-            return _orderRepository.GetAll().Where(o => o.CustomerId == customerId).ToList();
+            // Вызов метода базового класса
+            return base.GetOrdersByCustomerId(customerId);
         }
         
         public List<Material> GetAllMaterials()
         {
-            // Временная реализация
-            return new List<Material>();
+            // Вызов метода базового класса
+            return base.GetAllMaterials();
         }
         
         public Material GetMaterialById(int id)
         {
-            // Временная реализация
-            return new Material { Id = id };
+            // Вызов метода базового класса
+            return base.GetMaterialById(id);
         }
         
         public List<ProductStyle> GetAllStyles()
         {
-            // Временная реализация
-            return new List<ProductStyle>();
+            // Вызов метода базового класса
+            return base.GetAllStyles();
         }
         
         public ProductStyle GetStyleById(int id)
         {
-            // Временная реализация
-            return new ProductStyle { Id = id };
+            // Вызов метода базового класса
+            return base.GetStyleById(id);
         }
     }
 } 
