@@ -11,7 +11,7 @@ namespace Vintagefur.BusinessLogic.BLogic
     {
         public Cart GetCart(HttpContext httpContext)
         {
-            // Вызов метода базового класса для HttpContext
+            // Вызов метода базового класса
             return GetCartAction(httpContext);
         }
 
@@ -26,6 +26,9 @@ namespace Vintagefur.BusinessLogic.BLogic
             
             // Вызов метода базового класса для добавления товара
             AddItemToCartAction(httpContext, cart, productId, quantity);
+            
+            // Сохраняем корзину в сессию
+            SaveCartToSessionAction(httpContext, cart);
         }
 
         public void RemoveItemFromCart(HttpContext httpContext, int productId)
@@ -39,12 +42,15 @@ namespace Vintagefur.BusinessLogic.BLogic
             
             // Вызов метода базового класса для удаления товара
             RemoveItemFromCartAction(httpContext, cart, productId);
+            
+            // Сохраняем корзину в сессию
+            SaveCartToSessionAction(httpContext, cart);
         }
 
         public void UpdateCartItemQuantity(HttpContext httpContext, int productId, int quantity)
         {
             // Валидация входных данных
-            if (productId <= 0)
+            if (productId <= 0 || quantity < 0)
                 return;
 
             // Получаем корзину через метод базового класса
@@ -52,6 +58,9 @@ namespace Vintagefur.BusinessLogic.BLogic
             
             // Вызов метода базового класса для обновления количества
             UpdateCartItemQuantityAction(httpContext, cart, productId, quantity);
+            
+            // Сохраняем корзину в сессию
+            SaveCartToSessionAction(httpContext, cart);
         }
 
         public void ClearCart(HttpContext httpContext)
@@ -64,6 +73,9 @@ namespace Vintagefur.BusinessLogic.BLogic
         {
             try
             {
+                if (actionDto == null)
+                    return new CartResultDto { IsSuccess = false, ErrorMessage = "Недопустимые параметры запроса" };
+                
                 // Создаем результат по умолчанию
                 var result = new CartResultDto
                 {
@@ -74,38 +86,59 @@ namespace Vintagefur.BusinessLogic.BLogic
                     TotalItems = 0
                 };
                 
+                // Используем HttpContext.Current если он доступен
+                var httpContext = HttpContext.Current;
+                if (httpContext == null)
+                    return new CartResultDto { IsSuccess = false, ErrorMessage = "HttpContext недоступен" };
+                
+                // Получаем корзину
+                var cart = GetCartAction(httpContext);
+                
                 // Реализуем логику в зависимости от типа действия
                 switch (actionDto.Action?.ToLower())
                 {
                     case "add":
-                        // Логика добавления товара в корзину
-                        result.Items.Add(new CartItem 
-                        { 
-                            ProductId = actionDto.ProductId,
-                            Quantity = actionDto.Quantity
-                        });
+                        if (actionDto.ProductId <= 0 || actionDto.Quantity <= 0)
+                            return new CartResultDto { IsSuccess = false, ErrorMessage = "Недопустимые параметры товара" };
+                            
+                        AddItemToCartAction(httpContext, cart, actionDto.ProductId, actionDto.Quantity);
                         break;
                         
                     case "remove":
-                        // Логика удаления товара из корзины
+                        if (actionDto.ProductId <= 0)
+                            return new CartResultDto { IsSuccess = false, ErrorMessage = "Недопустимый ID товара" };
+                            
+                        RemoveItemFromCartAction(httpContext, cart, actionDto.ProductId);
                         break;
                         
                     case "update":
-                        // Логика обновления количества товара
+                        if (actionDto.ProductId <= 0 || actionDto.Quantity < 0)
+                            return new CartResultDto { IsSuccess = false, ErrorMessage = "Недопустимые параметры для обновления" };
+                            
+                        UpdateCartItemQuantityAction(httpContext, cart, actionDto.ProductId, actionDto.Quantity);
                         break;
                         
                     case "clear":
-                        // Логика очистки корзины
+                        ClearCartAction(httpContext);
                         break;
                         
                     case "get":
-                        // Логика получения корзины
+                        // Просто получаем текущую корзину
                         break;
                         
                     default:
-                        result.IsSuccess = false;
-                        result.ErrorMessage = "Неизвестное действие";
-                        break;
+                        return new CartResultDto { IsSuccess = false, ErrorMessage = "Неизвестное действие" };
+                }
+                
+                // Сохраняем корзину в сессию
+                SaveCartToSessionAction(httpContext, cart);
+                
+                // Преобразуем корзину в результат
+                foreach (var item in cart.Items)
+                {
+                    result.Items.Add(item);
+                    result.TotalPrice += item.TotalPrice;
+                    result.TotalItems += item.Quantity;
                 }
                 
                 return result;
@@ -170,6 +203,11 @@ namespace Vintagefur.BusinessLogic.BLogic
         }
         
         private void ClearCartAction(HttpContext httpContext)
+        {
+            // Реализация для HttpContext
+        }
+        
+        private void SaveCartToSessionAction(HttpContext httpContext, Cart cart)
         {
             // Реализация для HttpContext
         }

@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vintagefur.BusinessLogic.Core;
 using Vintagefur.BusinessLogic.Interfaces;
 using Vintagefur.Domain.Models;
 using Vintagefur.Infrastructure.Repositories;
 
 namespace Vintagefur.BusinessLogic.BLogic
 {
-    public class AdminBL : IAdminService
+    public class AdminBL : AdminApi, IAdminService
     {
         private readonly ProductRepository _productRepository;
         private readonly CategoryRepository _categoryRepository;
@@ -56,39 +57,39 @@ namespace Vintagefur.BusinessLogic.BLogic
         // Products методы
         public bool CreateProduct(Product product)
         {
-            // Здесь должна быть логика создания продукта
-            return _productRepository.Create(product);
+            // Вызов метода базового класса
+            return base.CreateProduct(product);
         }
 
         public bool UpdateProduct(Product product)
         {
-            // Здесь должна быть логика обновления продукта
-            return _productRepository.Update(product);
+            // Вызов метода базового класса
+            return base.UpdateProduct(product);
         }
 
         public bool DeleteProduct(int productId)
         {
-            // Здесь должна быть логика удаления продукта
-            return _productRepository.Delete(productId);
+            // Вызов метода базового класса
+            return base.DeleteProduct(productId);
         }
         
         // Categories методы
         public bool CreateCategory(Category category)
         {
-            // Здесь должна быть логика создания категории
-            return _categoryRepository.Create(category);
+            // Вызов метода базового класса
+            return base.CreateCategory(category);
         }
 
         public bool UpdateCategory(Category category)
         {
-            // Здесь должна быть логика обновления категории
-            return _categoryRepository.Update(category);
+            // Вызов метода базового класса
+            return base.UpdateCategory(category);
         }
 
         public bool DeleteCategory(int categoryId)
         {
-            // Здесь должна быть логика удаления категории
-            return _categoryRepository.Delete(categoryId);
+            // Вызов метода базового класса
+            return base.DeleteCategory(categoryId);
         }
         
         public List<Category> GetAllCategories()

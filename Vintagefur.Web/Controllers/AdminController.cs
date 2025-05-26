@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using Vintagefur.BusinessLogic.Interfaces;
-using Vintagefur.BusinessLogic.Services;
+using Vintagefur.BusinessLogic;
 using Vintagefur.Domain.Models;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,13 +12,13 @@ namespace Vintagefur.Web.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly ProductServiceBusinessLogic _productServiceBusinessLogic;
-        private readonly AdminServiceBusinessLogic _adminService;
+        private readonly IProduct _productService;
+        private readonly IAdminService _adminService;
 
         public AdminController()
         {
-            _productServiceBusinessLogic = new ProductServiceBusinessLogic();
-            _adminService = new AdminServiceBusinessLogic();
+            _productService = BusinessLogicFactory.Instance.GetProductBL();
+            _adminService = BusinessLogicFactory.Instance.GetAdminBL();
             
             // Диагностика - безопасная
             Debug.WriteLine("AdminController создан");
@@ -63,8 +63,8 @@ namespace Vintagefur.Web.Controllers
         public ActionResult CreateProduct()
         {
             var categories = _adminService.GetAllCategories();
-            var materials = _productServiceBusinessLogic.GetAllMaterials();
-            var styles = _productServiceBusinessLogic.GetAllStyles();
+            var materials = _adminService.GetAllMaterials();
+            var styles = _adminService.GetAllStyles();
             
             ViewBag.Categories = new SelectList(categories, "Id", "Name");
             ViewBag.Materials = new SelectList(materials, "Id", "Name");
@@ -84,8 +84,8 @@ namespace Vintagefur.Web.Controllers
             }
 
             var categories = _adminService.GetAllCategories();
-            var materials = _productServiceBusinessLogic.GetAllMaterials();
-            var styles = _productServiceBusinessLogic.GetAllStyles();
+            var materials = _adminService.GetAllMaterials();
+            var styles = _adminService.GetAllStyles();
             
             ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             ViewBag.Materials = new SelectList(materials, "Id", "Name", product.MaterialId);
@@ -103,8 +103,8 @@ namespace Vintagefur.Web.Controllers
             }
 
             var categories = _adminService.GetAllCategories();
-            var materials = _productServiceBusinessLogic.GetAllMaterials();
-            var styles = _productServiceBusinessLogic.GetAllStyles();
+            var materials = _adminService.GetAllMaterials();
+            var styles = _adminService.GetAllStyles();
             
             ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             ViewBag.Materials = new SelectList(materials, "Id", "Name", product.MaterialId);
@@ -124,8 +124,8 @@ namespace Vintagefur.Web.Controllers
             }
 
             var categories = _adminService.GetAllCategories();
-            var materials = _productServiceBusinessLogic.GetAllMaterials();
-            var styles = _productServiceBusinessLogic.GetAllStyles();
+            var materials = _adminService.GetAllMaterials();
+            var styles = _adminService.GetAllStyles();
             
             ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             ViewBag.Materials = new SelectList(materials, "Id", "Name", product.MaterialId);
